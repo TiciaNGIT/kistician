@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kis Ticián</title>
+  <link rel="icon" type="image/png" href="tician_favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- NAV -->
+  <nav class="flex justify-between items-center py-6 px-6 md:px-20 border-b border-gray-800 bg-black sticky top-0 z-50">
+    <div class="text-xl md:text-2xl font-black uppercase tracking-tighter text-white">
+      2025
+    </div>
+    <div class="hidden md:flex space-x-8 items-center font-medium text-white">
+      <a href="#references" class="hover:text-red-500 transition">Referenciák</a>
+      <a href="#contact" class="btn-accent text-sm">Üzenet</a>  
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header id="home" class="relative py-24 px-6 md:px-20 overflow-hidden fade-in">
+    <div class="max-w-6xl mx-auto relative z-10">
+      <p class="text-gray-400 font-medium mb-2">Miben segíthetek?</p>
+      <h1 class="text-6xl md:text-9xl font-black tracking-tighter mb-4">KIS TICIÁN</h1>
+      <div class="accent-line"></div>
+      <p class="mt-8 text-xl md:text-2xl text-gray-300 max-w-2xl leading-relaxed">
+        Hardveres megoldások, komponensek cseréje, javítása.
+      </p>
+      <div class="mt-10 flex flex-col sm:flex-row gap-3">
+        <a href="#references" class="px-8 py-3 rounded-full border border-gray-600 hover:border-red-300 hover:text-red-500 transition text-xs uppercase tracking-widest">
+          Referenciák
+        </a>
+      </div>
+    </div>
+  </header>
+
+<section id="references" class="py-24 px-0 fade-in"> <!-- px-0, hogy a slider full-bleed legyen -->
+  <div class="section-inner">
+    <h2 class="text-4xl font-bold mb-16 px-6 md:px-20">Referenciák</h2>
+
+    <h3 class="text-2xl font-bold mb-6 px-6 md:px-20">PC Építés</h3>
+
+    <div class="slider">
+      <div class="slider-track">
+        <!-- ELSŐ KÉPKÉSZLET -->
+        <div class="slide">
+          <img src="pc.jpg" alt="PC építés 1">
+          <p class="slide-desc">Egyedi gamer PC építés</p>
+        </div>
+        <div class="slide">
+          <img src="pc.jpg" alt="PC építés 2">
+          <p class="slide-desc">Munkaállomás konfiguráció</p>
+        </div>
+        <div class="slide">
+          <img src="pc.jpg" alt="PC építés 3">
+          <p class="slide-desc">Kompakt, halk gép</p>
+        </div>
+
+        <!-- DUPLA A VÉGTELENHEZ -->
+        <div class="slide">
+          <img src="pc.jpg" alt="PC építés 1">
+          <p class="slide-desc">Egyedi gamer PC építés</p>
+        </div>
+        <div class="slide">
+          <img src="pc.jpg" alt="PC építés 2">
+          <p class="slide-desc">Munkaállomás konfiguráció</p>
+        </div>
+        <div class="slide">
+          <img src="pc.jpg" alt="PC építés 3">
+          <p class="slide-desc">Kompakt, halk gép</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  <!-- CONTACT -->
+  <section id="contact" class="py-24 px-6 md:px-20 fade-in">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-5xl font-black mb-8">Kapcsolat</h2>
+      <form id="contactForm" class="space-y-8">
+        <div>
+          <label for="name" class="block text-sm font-bold mb-1">Neved</label>
+          <input type="text" id="name" placeholder="Neved" class="contact-input" required>
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-bold mb-1">Email címed</label>
+          <input type="email" id="email" placeholder="pelda@gmail.com" class="contact-input" required>
+        </div>
+        <div>
+          <label for="subject" class="block text-sm font-bold mb-1">Tárgy</label>
+          <input type="text" id="subject" placeholder="Pl.: lassú a számítógépem" class="contact-input" required>
+        </div>
+        <div>
+          <label for="message" class="block text-sm font-bold mb-1">Üzenet</label>
+          <textarea id="message" rows="5" placeholder="Fejtsd ki a problémád!" class="contact-input" required></textarea>
+        </div>
+        <button id="sendBtn" type="submit" class="btn-accent w-full md:w-auto mt-2 uppercase text-xs tracking-widest">
+          Küldés
+        </button>
+        <div id="formStatus" class="text-sm font-semibold"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-10 text-center text-gray-400 text-xs uppercase tracking-widest border-t border-gray-800 bg-black">
+    &copy; 2025 Kis Ticián - Minden jog fenntartva.
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
