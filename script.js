@@ -1,7 +1,7 @@
 // Footer év
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// Carousel logic: mindig 3 kép látszik, 5s auto, nem végtelenített
+// Carousel logic: mindig 3 kép látszik, 5s auto, végtelenített
 (function () {
   const carousel = document.querySelector('.carousel');
   const viewport = carousel.querySelector('.viewport');
@@ -9,77 +9,84 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const prevBtn = carousel.querySelector('.prev');
   const nextBtn = carousel.querySelector('.next');
 
-  const GAP = parseFloat(getComputedStyle(track).getPropertyValue('--gap')) || 16;
-
-  let index = 0; // group index (0-based), minden csoportban 3 kép
+  const groupSize = 3;
+  let index = 0;
   let autoTimer = null;
 
-  function getItems() {
-    return Array.from(track.querySelectorAll('.ref-item'));
-  }
+  // --- 1) EREDETI ELEMEK ---
+  const items = Array.from(track.querySelectorAll('.ref-item'));
+  const totalItems = items.length;
+  const totalGroups = Math.ceil(totalItems / groupSize);
 
-  function getGroupsCount() {
-    const items = getItems();
-    const groupSize = 3;
-    return Math.max(1, Math.ceil(items.length / groupSize));
-  }
+  // --- 2) KLÓNOK HOZZÁADÁSA A VÉGÉRE ---
+  const clones = items.slice(0, groupSize).map(item => item.cloneNode(true));
+  clones.forEach(clone => track.appendChild(clone));
 
-  function updateTransform() {
+  // --- 3) TRANSZFORM FRISSÍTÉSE ---
+  function updateTransform(animate = true) {
     const vw = viewport.clientWidth;
     const offset = index * vw;
+
+    track.style.transition = animate ? 'transform 0.6s ease' : 'none';
     track.style.transform = `translate3d(-${offset}px, 0, 0)`;
   }
 
-  function goTo(idx) {
-    const max = getGroupsCount() - 1;
-    index = Math.min(Math.max(0, idx), max);
-    updateTransform();
-  }
-
+  // --- 4) KÖVETKEZŐ CSOPORT ---
   function next() {
-    const max = getGroupsCount() - 1;
-    if (index < max) {
-      index += 1;
-    } else {
-      index = 0; // visszaugrik az első csoporthoz
+    index++;
+    updateTransform(true);
+
+    // Ha elértük a klónokat → visszaugrás az eredeti első csoporthoz
+    if (index === totalGroups) {
+      setTimeout(() => {
+        index = 0;
+        updateTransform(false);
+      }, 600);
     }
-    updateTransform();
   }
 
+  // --- 5) ELŐZŐ CSOPORT ---
   function prev() {
-    const max = getGroupsCount() - 1;
-    if (index > 0) {
-      index -= 1;
-    } else {
-      index = max; // visszaugrik az utolsó csoporthoz
+    if (index === 0) {
+      // Ugrás a klónokhoz (láthatatlanul)
+      index = totalGroups;
+      updateTransform(false);
+
+      // majd animált visszalépés
+      requestAnimationFrame(() => {
+        index = totalGroups - 1;
+        updateTransform(true);
+      });
+      return;
     }
-    updateTransform();
+
+    index--;
+    updateTransform(true);
   }
 
+  // --- 6) AUTO ---
   function startAuto() {
     stopAuto();
-    autoTimer = setInterval(next, 5000); // 5s auto-advance
+    autoTimer = setInterval(next, 5000);
   }
   function stopAuto() {
     if (autoTimer) clearInterval(autoTimer);
     autoTimer = null;
   }
 
-  // Controls
+  // --- 7) GOMBOK ---
   nextBtn.addEventListener('click', () => { next(); startAuto(); });
   prevBtn.addEventListener('click', () => { prev(); startAuto(); });
 
-  // Resize handler
-  window.addEventListener('resize', () => {
-    updateTransform();
-  });
+  // --- 8) RESIZE ---
+  window.addEventListener('resize', () => updateTransform(false));
 
-  // Pause auto on hover
+  // --- 9) HOVER ---
   viewport.addEventListener('mouseenter', stopAuto);
   viewport.addEventListener('mouseleave', startAuto);
 
-  // Init
-  updateTransform();
+  // --- 10) INIT ---
+  updateTransform(false);
   startAuto();
 })();
 
@@ -113,7 +120,6 @@ document.getElementById('year').textContent = new Date().getFullYear();
         to_email: 'tician1209@gmail.com'
       };
 
-      // Cseréld a saját azonosítóidra: emailjs.send('SERVICE_ID', 'TEMPLATE_ID', templateParams)
       const res = await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams);
       setStatus('Üzenet elküldve. Köszönöm a megkeresést!');
       form.reset();
