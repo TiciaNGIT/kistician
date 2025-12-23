@@ -235,3 +235,38 @@ input:focus, textarea:focus {
   .nav-btn { width: 36px; height: 36px; }
   .hero-cta { flex-direction: column; }
 }
+
+/* Mobil: 1 kép látszik */
+@media (max-width: 600px) {
+  .track {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .ref-item {
+    flex: 0 0 100%; /* teljes szélesség */
+  }
+
+  .nav-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .hero-cta {
+    flex-direction: column;
+  }
+}
+
+/* Tablet: 2 kép látszik */
+@media (min-width: 601px) and (max-width: 900px) {
+  .ref-item {
+    flex: 0 0 calc((100% - var(--gap)) / 2);
+  }
+}
+
+/* Desktop: 3 kép látszik (eredeti) */
+@media (min-width: 901px) {
+  .ref-item {
+    flex: 0 0 calc((100% - (var(--gap) * 2)) / 3);
+  }
+}
