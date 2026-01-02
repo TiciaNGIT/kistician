@@ -1,202 +1,93 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="hu">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Kis Ticián</title>
-  <link rel="icon" type="image/jpeg" href="tician_favicon.png" />
-  <link rel="preload" href="styles.css" as="style" />
-  <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      if (window.emailjs) {
-        emailjs.init('2Ww1GKEzSl5RmuiTV');
-      }
-    });
-  </script>
+    <meta charset="UTF-8">
+    <title>Kis Ticián</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-<header class="site-header minimal-header">
-  <div class="top-bar">
-    <span class="top-title">Kis Ticián</span>
-  </div>
+
+<header class="top-nav">
+    <div class="logo">
+        <img src="images/ticianletters.png" alt="Ticián logo" class="logo-img">
+    </div>
+
+    <nav class="nav-links">
+        <a href="index.html" class="active">Főoldal</a>
+        <a href="szamitogep.html">PC</a>
+        <a href="elektronika.html">Elektronika</a>
+        <a href="gaming.html">CS2</a>
+        <a href="media.html">Média</a>
+        <a href="kapcsolat.html">Kapcsolat</a>
+    </nav>
 </header>
 
+<main class="hero">
 
-  <main id="home">
-    <section class="hero section">
-      <div class="container hero-inner">
-        <div class="hero-text">
-          <h1>IT / Tech / Elektronika</h1>
-          <p>Operációs rendszerek telepítése, lassú számítógép feltámasztása, forrasztás, javítás, bővítés, alkatrészek beszerzése.</p>
-          <div class="hero-cta">
-            <a class="btn btn-primary" href="#contact">Kapcsolatfelvétel</a>
-            <a class="btn btn-ghost" href="#references">Referenciák</a>
-          </div>
-        </div>
-      </div>
-    </section>
+    <section class="hero-card">
 
-    <section id="references" class="section">
-      <div class="container">
-        <div class="section-head">
-          <h2>Referenciák</h2>
-          <p>Mindig 3 kép látható, alatta cím és leírás. Képek: téglalap, magasság szerint nagyobb.</p>
-        </div>
-
-        <div class="carousel" aria-label="Referenciakarusszel">
-          <button class="nav-btn prev" aria-label="Előző">
-            <span aria-hidden="true">‹</span>
-          </button>
-
-          <div class="viewport">
-            <div class="track">
-              <!-- Slide 1 -->
-              <article class="ref-item">
-                <div class="ref-media">
-                  <img src="images/installing.png" alt="Operációs rendszer telepítés – laptop" loading="lazy">
-                </div>
-                <div class="ref-text">
-                  <h3>Operációs rendszer telepítés</h3>
-                  <p>Tiszta, friss telepítés, illesztőprogramok és alap beállítások, optimalizálás a gyors induláshoz.</p>
-                </div>
-              </article>
-
-              <!-- Slide 2 -->
-              <article class="ref-item">
-                <div class="ref-media">
-                  <img src="images/soldering.png" alt="Finom forrasztás – alaplap javítása" loading="lazy">
-                </div>
-                <div class="ref-text">
-                  <h3>Forrasztás</h3>
-                  <p>Precíziós forrasztás alkatrészcseréhez és hibajavításhoz – tiszta, megbízható illesztések.</p>
-                </div>
-              </article>
-
-              <!-- Slide 3 -->
-              <article class="ref-item">
-                <div class="ref-media">
-                  <img src="images/fixing.png" alt="Számítógép javítás – diagnosztika" loading="lazy">
-                </div>
-                <div class="ref-text">
-                  <h3>Javítás</h3>
-                  <p>Diagnosztika és célzott javítás: alkatrészcsere, tisztítás, stabil működés visszaállítása.</p>
-                </div>
-              </article>
-
-              <!-- Slide 4 -->
-              <article class="ref-item">
-                <div class="ref-media">
-                  <img src="images/upgrading.png" alt="Bővítés – memória és tárhely" loading="lazy">
-                </div>
-                <div class="ref-text">
-                  <h3>Bővítés</h3>
-                  <p>RAM, SSD és GPU bővítés – teljesítmény, ami érződik a mindennapi használatban.</p>
-                </div>
-              </article>
-			  
-			    <!-- Slide 5 -->
-              <article class="ref-item">
-                <div class="ref-media">
-                  <img src="images/dustypc.png" alt="Bővítés – memória és tárhely" loading="lazy">
-                </div>
-                <div class="ref-text">
-                  <h3>PC/ Laptop tisztítás</h3>
-                  <p>RAM, SSD és GPU bővítés – teljesítmény, ami érződik a mindennapi használatban.</p>
-                </div>
-              </article>
-			 
-
-              <!-- Slide 6 -->
-              <article class="ref-item">
-                <div class="ref-media">
-                  <img src="images/support.png" alt="IT support – felhasználói támogatás" loading="lazy">
-                </div>
-                <div class="ref-text">
-                  <h3>IT support</h3>
-                  <p>Gyors segítség beállításokhoz, hibákhoz, frissítésekhez – érthetően, türelmesen.</p>
-                </div>
-              </article>
-
-              <!-- Slid (példa további képhez) -->
-              <article class="ref-item">
-                <div class="ref-media">
-                  <img src="images/os.png" alt="Operációs rendszer telepítés – asztali PC" loading="lazy">
-                </div>
-                <div class="ref-text">
-                  <h3>Telepítés – asztali</h3>
-                  <p>UEFI beállítások, partícionálás, gyors indítás, alap szoftverek felrakása.</p>
-                </div>
-              </article>
+        <div class="hero-left">
+            <div class="avatar-image">
+                <img src="images/tician.png" alt="Ticián">
             </div>
-          </div>
-		  
-		  
-
-          <button class="nav-btn next" aria-label="Következő">
-            <span aria-hidden="true">›</span>
-          </button>
         </div>
 
-        <p class="note">További képek bármikor hozzáadhatók: a karusszel automatikusan csoportokban (3-asával) léptet.</p>
-      </div>
+        <div class="hero-right">
+            <h1 class="hero-title">
+                Üdvözöllek, a nevem <span class="accent">Kis Ticián</span>
+            </h1>
+
+            <p class="hero-description">
+                IT-val foglalkozom
+            </p>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <span class="info-label">Munkakör<br></span>
+                    <span class="info-value">IT</span>
+					
+                </div>
+
+                <div class="info-box">
+                    <span class="info-label">e-Mail<br></span>
+                    <span class="info-value">tician1209@gmail.com</span>
+                </div>
+
+                <div class="info-box">
+                    <span class="info-label">Helyszín<br></span>
+                    <span class="info-value">Kiskunfélegyháza</span>
+                </div>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-box">
+                    <span class="stat-number">Jelenleg<br></span>
+                    <span class="stat-label">23 éves vagyok</span>
+                </div>
+
+                <div class="stat-box">
+                    <span class="stat-number">6-7 év<br></span>
+                    <span class="stat-label">Tapasztalat IT-ban</span>
+                </div>
+
+                <div class="stat-box">
+                    <span class="stat-number">KB<br></span>
+                    <span class="stat-label">ennyi</span>
+                </div>
+            </div>
+        </div>
+
     </section>
 
-    <section id="contact" class="section">
-      <div class="container">
-        <div class="section-head">
-          <h1>Elérhetőségek</h1>
-        </div>
-
-<div class="social-links">
-  <a href="https://www.facebook.com/ticiankis/" target="_blank" aria-label="Facebook">
-    <img src="images/socials/fb.png" alt="Facebook">
-  </a>
-  <a href="https://www.instagram.com/tician1337/" target="_blank" aria-label="Instagram">
-    <img src="images/socials/insta.png" alt="Instagram">
-  </a>
-  <a href="https://www.youtube.com/@tician1337" target="_blank" aria-label="YouTube">
-    <img src="images/socials/yt.png" alt="YouTube">
-  </a>
-  <a href="https://www.tiktok.com/@tician1337?lang=hu-HU" target="_blank" aria-label="TikTok">
-    <img src="images/socials/tiktok.png" alt="TikTok">
-  </a>
-</div>
-
-        <form id="contact-form" class="contact-form" novalidate>
-          <div class="form-row">
-            <label for="name">Név</label>
-            <input type="text" id="name" name="name" placeholder="Név" required>
-          </div>
-          <div class="form-row">
-            <label for="email">E-mail</label>
-            <input type="email" id="email" name="email" placeholder="nev@pelda.hu" required>
-          </div>
-          <div class="form-row">
-            <label for="message">Üzenet</label>
-            <textarea id="message" name="message" placeholder="Írd le röviden, miben segíthetek..." rows="5" required></textarea>
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Küldés</button>
-            <span class="form-status" aria-live="polite"></span>
-          </div>
-        </form>
-
-        <div class="alt-contact">
-          <p><strong>e-Mail:</strong> <a href="mailto:tician1209@gmail.com">tician1209@gmail.com</a></p>
-		  <p>Vagy keress Facebook-on, Instagram-on!</p>
-        </div>
-      </div>
+    <section id="about" class="section-placeholder">
+        <h2>Rólam</h2>
+        <p>Megszülettem oszt itt vagyok.</p>
     </section>
-  </main>
 
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <p>© <span id="year"></span> Kis Ticián. Minden jog fenntartva.</p>
-    </div>
-  </footer>
+</main>
 
-  <script src="script.js" defer></script>
+<script src="js/script.js"></script>
 </body>
 </html>

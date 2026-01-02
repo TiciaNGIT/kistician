@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>Kapcsolat – Kis Ticián</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="kapcsolat-page">
+<header class="top-nav">
+  <div class="logo">
+    <img src="images/ticianletters.png" alt="Ticián logo" class="logo-img">
+  </div>
+  <nav class="nav-links">
+    <a href="index.html">Főoldal</a>
+    <a href="szamitogep.html">PC</a>
+    <a href="elektronika.html">Elektronika</a>
+    <a href="gaming.html">CS2</a>
+    <a href="media.html">Média</a>
+    <a href="kapcsolat.html" class="active">Kapcsolat</a>
+  </nav>
+</header>
+
+<main class="hero">
+
+  <section class="contact-card">
+
+    <h2 class="contact-title">Kapcsolat</h2>
+    <p class="contact-subtitle">Írj nekem vagy kövess a közösségi oldalakon</p>
+
+    <!-- SOCIAL ICONS -->
+    <div class="social-links">
+      <a href="https://www.facebook.com/ticiankis/" target="_blank">
+        <img src="images/socials/fb.png" alt="Facebook">
+      </a>
+      <a href="https://www.instagram.com/tician1337/" target="_blank">
+        <img src="images/socials/insta.png" alt="Instagram">
+      </a>
+      <a href="https://www.youtube.com/@tician1337" target="_blank">
+        <img src="images/socials/yt.png" alt="YouTube">
+      </a>
+      <a href="https://www.tiktok.com/@tician1337?lang=hu-HU" target="_blank">
+        <img src="images/socials/tiktok.png" alt="TikTok">
+      </a>
+    </div>
+
+    <!-- EMAIL FORM -->
+    <form id="contact-form" class="contact-form" novalidate>
+
+      <div class="form-row">
+        <label for="name">Név</label>
+        <input type="text" id="name" name="name" placeholder="Név" required>
+      </div>
+
+      <div class="form-row">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" placeholder="nev@pelda.hu" required>
+      </div>
+
+      <div class="form-row">
+        <label for="message">Üzenet</label>
+        <textarea id="message" name="message" placeholder="Írd le röviden, miben segíthetek..." rows="5" required></textarea>
+      </div>
+
+      <button type="submit" class="contact-btn">Küldés</button>
+      <span class="form-status"></span>
+
+    </form>
+
+    <div class="alt-contact">
+      <p><strong>E-mail:</strong> <a href="mailto:tician1209@gmail.com">tician1209@gmail.com</a></p>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- EMAILJS -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.emailjs) {
+      emailjs.init('2Ww1GKEzSl5RmuiTV');
+    }
+
+    const form = document.getElementById('contact-form');
+    const status = document.querySelector('.form-status');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      status.textContent = "Küldés folyamatban...";
+
+      emailjs.sendForm('service_0q8qv3f', 'template_1q8qv3f', this)
+        .then(() => {
+          status.textContent = "Üzenet sikeresen elküldve!";
+          form.reset();
+        })
+        .catch(() => {
+          status.textContent = "Hiba történt, próbáld újra.";
+        });
+    });
+  });
+</script>
+
+</body>
+</html>

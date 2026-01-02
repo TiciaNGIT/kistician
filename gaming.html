@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Kis Ticián – CS2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Rajdhani font -->
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        html { scroll-behavior: smooth; }
+
+        /* Felső fix mini menü */
+        .cs2-section-nav {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 9999;
+            background: rgba(0,0,0,0.4);
+            padding: 8px 14px;
+            border-radius: 12px;
+            backdrop-filter: blur(6px);
+        }
+		
+		.pc-intro-box {
+    scroll-margin-top: 140px; /* navbar + mini menü magasság */
+}
+
+
+        .cs2-section-nav a {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 14px;
+            background: #d4a038;
+            border: 2px solid #d4a038;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .cs2-section-nav a:hover {
+            background: #e8b44c;
+            border-color: #e8b44c;
+            color: #0f1114;
+        }
+
+        /* CS2 box stílus */
+        .cs2-box {
+            width: 300px;
+            padding: 15px;
+            background: #0f1114;
+            border: 2px solid #d4a038;
+            border-radius: 10px;
+            font-family: 'Rajdhani', sans-serif;
+            color: #e6e6e6;
+            margin: 40px auto;
+        }
+
+        .cs2-box h2, .cs2-box h3 {
+            margin-top: 0;
+            text-align: center;
+            color: #d4a038;
+            letter-spacing: 1px;
+        }
+
+        .cs2-box label {
+            display: block;
+            margin-top: 10px;
+            font-size: 15px;
+            color: #cfcfcf;
+        }
+
+        .cs2-box input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            background: #1a1d21;
+            border: 1px solid #555;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 15px;
+        }
+
+        .gen-btn, .copy-btn, .download-btn {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            background: #d4a038;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #0f1114;
+            transition: 0.2s;
+        }
+
+        .gen-btn:hover, .copy-btn:hover, .download-btn:hover {
+            background: #e8b44c;
+        }
+
+        .output-box {
+            margin-top: 15px;
+            padding: 10px;
+            background: #1a1d21;
+            border: 1px solid #555;
+            border-radius: 5px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        code { word-break: break-word; }
+    </style>
+</head>
+
+<body>
+
+<header class="top-nav">
+    <div class="logo">
+        <img src="images/ticianletters.png" alt="Ticián logo" class="logo-img">
+    </div>
+
+    <nav class="nav-links">
+        <a href="index.html">Főoldal</a>
+        <a href="szamitogep.html">PC</a>
+        <a href="elektronika.html">Elektronika</a>
+        <a href="gaming.html" class="active">CS2</a>
+        <a href="media.html">Média</a>
+        <a href="kapcsolat.html">Kapcsolat</a>
+    </nav>
+</header>
+
+<!-- Felső fix mini menü -->
+<nav class="cs2-section-nav">
+    <a href="#bind180">180BIND</a>
+    <a href="#practice">PRACTICE</a>
+    <a href="#knives">KNIVES</a>
+</nav>
+
+<main class="hero">
+
+<!-- 180BIND SZEKCIÓ -->
+<section id="bind180" class="pc-intro-box">
+    <h2>180°BIND</h2>
+    <p>
+        Ha nem működik, akkor nézd meg, hogy a konzolban mit ír. Valószínűleg "ScanCode XX"-et fog kiírni a gomb helyett, ezért át kell írni.
+    </p>
+</section>
+
+<div class="cs2-box">
+  <h2>CS2 180°BIND</h2>
+
+  <label>In‑Game Sensitivity (pl.: 0.6)</label>
+  <input id="sens" type="number" step="0.001">
+
+  <label>Gomb (pl.: X vagy mouse4)</label>
+  <input id="btn" type="text">
+
+  <button class="gen-btn" onclick="generateCode()">Mehet</button>
+
+  <div class="output-box">
+    <code id="output">...</code>
+  </div>
+
+  <button class="copy-btn" onclick="copyCode()">Másolás</button>
+</div>
+
+<script>
+function generateCode() {
+    const sens = parseFloat(document.getElementById("sens").value);
+    const btn = document.getElementById("btn").value.trim();
+    if (!sens || !btn) return;
+
+    const yaw = (180 / sens).toFixed(3);
+    const code = `bind "${btn}" "+left; sensitivity ${yaw}"`;
+
+    document.getElementById("output").innerText = code;
+}
+
+async function copyCode() {
+    await navigator.clipboard.writeText(document.getElementById("output").innerText);
+}
+</script>
+
+<!-- PRACTICE SZEKCIÓ -->
+<section id="practice" class="pc-intro-box">
+    <h2>60 perces, szabad gyakorlás indítása</h2>
+    <p>
+        1. Egyszeri kódot csak másold be a konzolba.<br>
+        2. Készítsd BIND-et, és másold be a konzolba.<br>
+        3. Töltsd le a CFG-t, és "exec practice" paranccsal töltsd be bármikor.
+    </p>
+</section>
+
+<div class="cs2-box">
+  <h3>PRACTICE CFG</h3>
+
+  <button onclick="copyPracticeRaw()" class="copy-btn">Egyszeri kód másolása</button>
+
+  <label>Melyik gombra szeretnéd a bindet?</label>
+  <input id="practiceBindKey" type="text" placeholder="Pl.: F6 vagy K">
+
+  <button onclick="generatePracticeBind()" class="gen-btn">Mehet</button>
+
+  <div class="output-box">
+    <code id="practiceOutput">...</code>
+  </div>
+
+  <button onclick="copyPracticeBind()" class="copy-btn">Egyéni BIND másolása</button>
+
+  <button onclick="downloadPracticeCfg()" class="download-btn">practice.cfg letöltése</button>
+</div>
+
+<script>
+const rawPracticeCode =
+`sv_cheats 1;bot_kick;mp_limitteams 0;mp_autoteambalance 0;mp_roundtime 60;mp_roundtime_defuse 60;mp_freezetime 0;mp_warmup_end;ammo_grenade_limit_total 5;sv_infinite_ammo 1;mp_maxmoney 60000;mp_startmoney 60000;mp_buytime 9999;mp_buy_anywhere 1;mp_restartgame 1;sv_grenade_trajectory_prac_pipreview true;sv_grenade_trajectory 1;sv_grenade_trajectory_time 10;sv_showimpacts 1;sv_showimpacts_time 10;give weapon_incgrenade;give weapon_flashbang;give weapon_smokegrenade;give weapon_molotov;give weapon_decoy;give weapon_hegrenade;sv_grenade_trajectory 1`;
+
+async function copyPracticeRaw() {
+    await navigator.clipboard.writeText(rawPracticeCode);
+}
+
+function generatePracticeBind() {
+    let key = document.getElementById("practiceBindKey").value.trim();
+    if (!key) key = "F6";
+    document.getElementById("practiceOutput").innerText =
+        `bind "${key}" "${rawPracticeCode}"`;
+}
+
+async function copyPracticeBind() {
+    await navigator.clipboard.writeText(document.getElementById("practiceOutput").innerText);
+}
+
+function downloadPracticeCfg() {
+    window.open("IDE ÍROD BE A DRIVE LINKET", "_blank");
+}
+</script>
+
+<!-- KNIVES SZEKCIÓ -->
+<section id="knives" class="pc-intro-box">
+    <h2>Összes kés lekérés</h2>
+    <p>
+        1. Egyszeri kódot csak másold be a konzolba.<br>
+        2. Készítsd BIND-et, és másold be a konzolba.<br>
+        3. Töltsd le a CFG-t, és "exec knives" paranccsal töltsd be bármikor.
+    </p>
+</section>
+
+<div class="cs2-box">
+  <h3>KNIVES CFG</h3>
+
+  <button onclick="copyRawKnives()" class="copy-btn">Egyszeri kód másolása</button>
+
+  <label>Melyik gombra szeretnéd a bindet?</label>
+  <input id="knifeBindKey" type="text" placeholder="F7 vagy P">
+
+  <button onclick="generateKnifeBind()" class="gen-btn">Mehet</button>
+
+  <div class="output-box">
+    <code id="knifeOutput">...</code>
+  </div>
+
+  <button onclick="copyKnifeBind()" class="copy-btn">Egyéni BIND másolása</button>
+
+  <button onclick="downloadKnifeCfg()" class="download-btn">knives.cfg letöltése</button>
+</div>
+
+<script>
+const rawKnifeCode =
+`sv_cheats 1;mp_drop_knife_enable 1;subclass_create 526;subclass_create 525;subclass_create 523;subclass_create 522;subclass_create 521;subclass_create 520;subclass_create 519;subclass_create 518;subclass_create 517;subclass_create 516;subclass_create 515;subclass_create 514;subclass_create 513;subclass_create 512;subclass_create 511;subclass_create 510;subclass_create 509`;
+
+async function copyRawKnives() {
+    await navigator.clipboard.writeText(rawKnifeCode);
+}
+
+function generateKnifeBind() {
+    let key = document.getElementById("knifeBindKey").value.trim();
+    if (!key) key = "F7";
+    document.getElementById("knifeOutput").innerText =
+        `bind "${key}" "${rawKnifeCode}"`;
+}
+
+async function copyKnifeBind() {
+    await navigator.clipboard.writeText(document.getElementById("knifeOutput").innerText);
+}
+
+function downloadKnifeCfg() {
+    window.open("IDE ÍROD BE A DRIVE LINKET", "_blank");
+}
+</script>
+
+</main>
+
+</body>
+</html>
