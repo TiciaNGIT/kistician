@@ -30,12 +30,16 @@ html, body {
 
 body {
     font-family: var(--font-main);
-    background: radial-gradient(circle at top, #2a0f12 0, #050508 45%, #000000 100%);
+    background: radial-gradient(circle at top, #2a0f12 0%, #0a0a0f 40%, #000000 100%),
+                url("images/media/noise.png");
+    background-blend-mode: overlay;
+    background-size: cover;
+    background-attachment: fixed;
     color: var(--text-main);
     display: flex;
-	
     flex-direction: column;
 }
+
 
 /* --- HEADER --- */
 
@@ -819,13 +823,90 @@ body.kapcsolat-page main.hero {
     }
 }
 
-/* ================= MEDIA PAGE BACKGROUND ================= */
 
-.media-page {
-    background: radial-gradient(circle at top, #2a0f12 0%, #0a0a0f 40%, #000000 100%),
-                url("images/media/noise.png");
-    background-blend-mode: overlay;
-    background-size: cover;
-    background-attachment: fixed;
+/* ================= PC SERVICES ================= */
+
+.pc-services {
+    max-width: 1100px;
+    width: 100%;
+    margin: 60px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
 }
 
+.pc-row {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.pc-row.reverse {
+    flex-direction: row-reverse;
+}
+
+.pc-row img {
+    width: 50%;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.pc-text {
+    width: 50%;
+}
+
+.pc-text h3 {
+    font-size: 1.8rem;
+    color: var(--accent);
+    margin-bottom: 10px;
+}
+
+.pc-text p {
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* Mobil */
+@media (max-width: 900px) {
+    .pc-row,
+    .pc-row.reverse {
+        flex-direction: column;
+    }
+
+    .pc-row img,
+    .pc-text {
+        width: 100%;
+    }
+}
+
+/* ================= SIMPLE FOOTER CTA ================= */
+
+.simple-footer-cta {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 60px 0 40px 0;
+}
+
+.simple-cta-btn {
+    display: inline-block;
+    padding: 14px 40px;
+    background: var(--accent); /* piros */
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: 0.25s ease;
+    border: 2px solid var(--accent);
+}
+
+/* Hover – finom, modern */
+.simple-cta-btn:hover {
+    background: transparent;
+    color: var(--accent);
+    transform: translateY(-2px);
+}
