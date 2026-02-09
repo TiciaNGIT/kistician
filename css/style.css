@@ -1,0 +1,259 @@
+:root {
+  --bg-color: #f7fff9;
+  --menu-green: #e6fff1; /* A kért világoszöld a menünek */
+  --emerald: #1aa976;
+  --emerald-dark: #0a6a4a;
+  --text: #163a2c;
+  --muted: #4b6b5d;
+  --card: rgba(255, 255, 255, 0.85);
+  --stroke: rgba(26, 169, 118, 0.2);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  --radius: 18px;
+}
+
+/* Alapbeállítások */
+* { box-sizing: border-box; }
+html, body { 
+  margin: 0; 
+  padding: 0; 
+  height: 100%; 
+  -webkit-tap-highlight-color: transparent; 
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  background-color: var(--bg-color);
+  line-height: 1.5;
+}
+
+/* UNIVERZÁLIS RESZPONZÍV KÉPEK */
+/* Ez biztosítja, hogy semmilyen kép ne legyen óriási mobilon */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ATOMBIZTOS FIX HÁTTÉR */
+.fixed-bg {
+  position: fixed;
+  inset: 0;
+  background-image: url("../img/background.png");
+  background-size: cover;
+  background-position: center;
+  filter: blur(15px);
+  transform: scale(1.1);
+  z-index: -10; /* Minden alatt marad */
+}
+
+.container { 
+  width: min(1000px, 100%); 
+  margin: 0 auto; 
+  padding: 0 15px; 
+}
+
+/* HEADER */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--stroke);
+  padding: 10px 0;
+}
+.header-inner { display: flex; justify-content: space-between; align-items: center; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+.brand img { width: 42px; height: 42px; object-fit: contain; }
+.name { font-weight: 800; color: var(--emerald-dark); font-size: 1.1rem; }
+.tag { font-size: 0.75rem; color: var(--muted); display: block; }
+
+/* HAMBURGER GOMB */
+.hamburger {
+  background: white; 
+  border: 1px solid var(--stroke);
+  padding: 8px; 
+  border-radius: 10px; 
+  cursor: pointer;
+}
+.bars span { display: block; width: 22px; height: 2px; background: var(--emerald); margin: 4px 0; }
+
+/* MENÜ PANEL - MINDEN FELETT */
+.nav-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  pointer-events: none;
+  visibility: hidden;
+}
+.nav-drawer.open {
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.nav-drawer.open .backdrop { opacity: 1; }
+
+.panel {
+  position: absolute;
+  right: -100%;
+  top: 0;
+  bottom: 0;
+  width: 280px;
+  background-color: var(--menu-green) !important; /* VILÁGOSZÖLD HÁTTÉR */
+  padding: 25px;
+  transition: right 0.3s ease-out;
+  box-shadow: -10px 0 30px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+}
+.nav-drawer.open .panel { right: 0; }
+
+.nav-header {
+  display: flex;
+  justify-content: flex-end; /* Csak a bezáró gombot tartjuk meg */
+  margin-bottom: 25px;
+}
+.nav-close {
+  background: none; border: none; font-size: 28px; cursor: pointer; color: var(--emerald-dark);
+}
+
+.nav-links { display: flex; flex-direction: column; gap: 12px; }
+.nav-links a {
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 700;
+  padding: 14px;
+  background: white;
+  border-radius: 14px;
+  text-align: center;
+  transition: 0.2s;
+}
+.nav-links a.active {
+  background: var(--emerald);
+  color: white;
+}
+
+/* KÁRTYÁK ÉS SZEKCIÓK */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--stroke);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.pad { padding: 20px; }
+
+/* HERO ÉS SZOLGÁLTATÁS KÉPEK */
+.hero-grid { display: grid; grid-template-columns: 1fr; gap: 20px; align-items: center; }
+@media (min-width: 768px) { .hero-grid { grid-template-columns: 1fr 1fr; } }
+
+.hero-grid img, .ref-item img, .card img {
+  width: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+/* SPECIÁLIS ÁRLISTA ÉS KARUSSZEL KÉPEK */
+.carousel { position: relative; overflow: hidden; border-radius: var(--radius); }
+.carousel-track { display: flex; transition: 0.5s ease; }
+.carousel-slide { min-width: 100%; display: flex; align-items: center; justify-content: center; }
+
+/* Az árlista képek (price1-5.png stb.) mobilon is olvashatók maradnak */
+.carousel-slide img {
+  width: 100%;
+  height: auto !important;
+  max-height: 75vh; /* Ne legyen nagyobb a kijelző 75%-ánál */
+  object-fit: contain; /* Nem vágja le a széleit! */
+  background: rgba(255,255,255,0.2);
+}
+
+.dots { display: flex; justify-content: center; gap: 8px; padding: 12px 0; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--stroke); cursor: pointer; }
+.dot.active { background: var(--emerald); transform: scale(1.2); }
+
+/* Térkép reszponzivitás */
+iframe {
+  width: 100%;
+  border-radius: var(--radius);
+  border: 0;
+}
+
+/* MOBIL FINOMHANGOLÁSOK */
+@media (max-width: 600px) {
+  .name { font-size: 1rem; }
+  h1 { font-size: 1.5rem; }
+  .card.pad { padding: 15px; }
+}
+
+/* Szolgáltatás ikonok rögzítése */
+.service-title {
+    display: flex;
+    align-items: center; /* Függőlegesen középre zárja a képet és a szöveget */
+    gap: 12px;           /* Távolság az ikon és a szöveg között */
+    margin-bottom: 10px;
+}
+
+.service-icon {
+    width: 40px !important;  /* Fix szélesség az ikonnak */
+    height: 40px !important; /* Fix magasság az ikonnak */
+    object-fit: cover;
+    border-radius: 8px;      /* Opcionális: lekerekített sarkok a kis képnek */
+    flex-shrink: 0;          /* Megakadályozza, hogy a kép összenyomódjon */
+}
+
+.service-title h3 {
+    margin: 0;               /* Eltávolítja a felesleges margót a cím mellől */
+    font-size: 1.2rem;
+    color: var(--emerald-dark);
+}
+
+.booking-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group label {
+    font-weight: 700;
+    color: var(--emerald-dark);
+}
+
+.form-group input, .form-group select {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--stroke);
+    font-size: 1rem;
+    background: white;
+}
+
+.btn-submit {
+    background: var(--emerald);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.btn-submit:hover {
+    background: var(--emerald-dark);
+}
