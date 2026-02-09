@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smaragd Kozmetika • Időpontfoglalás</title>
+  <link rel="icon" type="image/png" href="img/smaragd.png">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+</head>
+<body>
+
+<div class="fixed-bg"></div>
+
+<header class="site-header">
+  <div class="header-inner container">
+    <a class="brand" href="index.html">
+      <img src="img/smaragd.png" alt="Logó">
+      <div class="name-wrap">
+        <div class="name">Smaragd Kozmetika</div>
+        <span class="tag">Minőségi bőrápolás</span>
+      </div>
+    </a>
+    <button class="hamburger" id="hamburgerBtn">
+      <div class="bars"><span></span><span></span><span></span></div>
+    </button>
+  </div>
+</header>
+
+<main class="container">
+  <section class="card pad" style="margin-top: 20px; text-align: center;">
+    <h1 style="margin:0;">Időpontfoglalás</h1>
+    <p style="margin: 10px 0 0; color: var(--muted);">Válaszd ki a számodra megfelelő időpontot és szolgáltatást!</p>
+  </section>
+
+  <section class="card" style="margin-top: 20px; overflow: hidden; min-height: 700px;">
+    <div class="calendly-inline-widget" 
+         data-url="https://calendly.com/tician1209/naptarkam" 
+         style="min-width:320px; height:700px;">
+    </div>
+  </section>
+
+  <p style="text-align: center; font-size: 0.85rem; color: var(--muted); margin: 20px 0;">
+    <i>A foglalás után automatikus visszaigazolást küldünk e-mailben.</i>
+  </p>
+</main>
+
+<nav class="nav-drawer">
+  <div class="backdrop" id="navBackdrop"></div>
+  <div class="panel">
+    <div class="nav-header">
+      <button class="nav-close" id="navClose">✕</button>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Rólunk</a>
+      <a href="szolgaltatasok.html">Szolgáltatások</a>
+      <a href="referencia.html">Referencia</a>
+      <a href="arlista.html">Árlista</a>
+      <a href="idopont.html">Időpontfoglalás</a>
+      <a href="elerhetoseg.html">Elérhetőségek</a>
+    </div>
+  </div>
+</nav>
+
+<script src="js/script.js"></script>
+</body>
+</html>
