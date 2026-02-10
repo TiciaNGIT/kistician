@@ -1,69 +1,106 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const drawer = document.querySelector(".nav-drawer");
-    const openBtn = document.querySelector("#hamburgerBtn");
-    const closeBtn = document.querySelector("#navClose");
-    const backdrop = document.querySelector(".backdrop");
+    
+    // --- 1. HAMBURGER MENÜ KEZELÉSE ---
+    const hamburgerBtn = document.getElementById("hamburgerBtn");
+    const navClose = document.getElementById("navClose");
+    const navDrawer = document.querySelector(".nav-drawer");
+    const navBackdrop = document.getElementById("navBackdrop");
+    const navLinks = document.querySelectorAll(".nav-links a");
 
-    // Menü nyitás/zárás
-    const toggleMenu = (open) => {
-        drawer.classList.toggle("open", open);
-        document.body.style.overflow = open ? "hidden" : "";
-    };
+    // Menü megnyitása
+    if (hamburgerBtn) {
+        hamburgerBtn.addEventListener("click", () => {
+            navDrawer.classList.add("open");
+            document.body.style.overflow = "hidden"; // Háttér görgetés letiltása
+        });
+    }
 
-    openBtn?.addEventListener("click", () => toggleMenu(true));
-    closeBtn?.addEventListener("click", () => toggleMenu(false));
-    backdrop?.addEventListener("click", () => toggleMenu(false));
+    // Menü bezárása (X gombbal)
+    if (navClose) {
+        navClose.addEventListener("click", () => {
+            navDrawer.classList.remove("open");
+            document.body.style.overflow = "";
+        });
+    }
 
-    // Aktív menüpont aláhúzása a fájlnév alapján
+    // Menü bezárása (háttérre kattintva)
+    if (navBackdrop) {
+        navBackdrop.addEventListener("click", () => {
+            navDrawer.classList.remove("open");
+            document.body.style.overflow = "";
+        });
+    }
+
+    // --- 2. AKTÍV MENÜPONT JELÖLÉSE ---
     const currentFile = window.location.pathname.split("/").pop() || "index.html";
-    document.querySelectorAll(".nav-links a").forEach(link => {
+    navLinks.forEach(link => {
+        // Ha rákattintanak egy linkre, zárjuk be a menüt
+        link.addEventListener("click", () => {
+            navDrawer.classList.remove("open");
+            document.body.style.overflow = "";
+        });
+
+        // Ha a link az aktuális oldalra mutat, kap egy 'active' osztályt
         if (link.getAttribute("href") === currentFile) {
             link.classList.add("active");
         }
     });
 
-    // Karusszel kezelő
-    document.querySelectorAll("[data-carousel]").forEach(carousel => {
-        const track = carousel.querySelector(".carousel-track");
-        const slides = Array.from(carousel.querySelectorAll(".carousel-slide"));
-        const dotsContainer = carousel.parentElement.querySelector(".dots");
+    // --- 3. ÁRLISTA KARUSSZEL (CSAK KÉZI LAPOZÁS) ---
+    const track = document.querySelector(".carousel-track");
+    const slides = Array.from(document.querySelectorAll(".carousel-slide"));
+    const dotsContainer = document.querySelector(".dots");
 
-        if (!track || slides.length === 0) return;
+    if (track && slides.length > 0) {
+        let currentIndex = 0;
 
-        let index = 0;
-
-        const update = (newIndex) => {
-            index = (newIndex + slides.length) % slides.length;
-            track.style.transform = `translateX(-${index * 100}%)`;
-            
-            // Pöttyök frissítése
-            if (dotsContainer) {
-                const dots = dotsContainer.querySelectorAll(".dot");
-                dots.forEach((d, i) => d.classList.toggle("active", i === index));
-            }
-        };
-
-        // Pöttyök létrehozása dinamikusan
-        if (dotsContainer) {
-            dotsContainer.innerHTML = "";
-            slides.forEach((_, i) => {
-                const dot = document.createElement("div");
-                dot.className = "dot" + (i === 0 ? " active" : "");
-                dot.addEventListener("click", () => update(i));
-                dotsContainer.appendChild(dot);
-            });
-        }
-
-        // Swipe (legyintés) funkció mobilra
-        let startX = 0;
-        carousel.addEventListener("touchstart", (e) => startX = e.touches[0].clientX, {passive: true});
-        carousel.addEventListener("touchend", (e) => {
-            let endX = e.changedTouches[0].clientX;
-            if (startX - endX > 50) update(index + 1); // Balra húz -> Következő
-            if (startX - endX < -50) update(index - 1); // Jobbra húz -> Előző
+        // Pöttyök generálása dinamikusan a képek száma alapján
+        slides.forEach((_, index) => {
+            const dot = document.createElement("div");
+            dot.classList.add("dot");
+            if (index === 0) dot.classList.add("active");
+            dot.addEventListener("click", () => goToSlide(index));
+            dotsContainer.appendChild(dot);
         });
 
-        // Automata léptetés 5 másodpercenként
-        setInterval(() => update(index + 1), 5000);
-    });
+        const dots = document.querySelectorAll(".dot");
+
+        // Funkció a váltáshoz
+        function goToSlide(index) {
+            currentIndex = index;
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+            
+            // Pöttyök frissítése
+            dots.forEach(d => d.classList.remove("active"));
+            dots[currentIndex].classList.add("active");
+        }
+
+        // --- ÉRINTÉS (SWIPE) TÁMOGATÁS MOBILRA ---
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        track.addEventListener("touchstart", (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        track.addEventListener("touchend", (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const swipeThreshold = 50; // Minimum ennyit kell húzni a váltáshoz
+            if (touchStartX - touchEndX > swipeThreshold) {
+                // Húzás balra -> Következő kép
+                if (currentIndex < slides.length - 1) {
+                    goToSlide(currentIndex + 1);
+                }
+            } else if (touchEndX - touchStartX > swipeThreshold) {
+                // Húzás jobbra -> Előző kép
+                if (currentIndex > 0) {
+                    goToSlide(currentIndex - 1);
+                }
+            }
+        }
+    }
 });
