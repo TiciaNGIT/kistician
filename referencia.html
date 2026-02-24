@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Smaragd Kozmetika • Referencia</title>
-  <link rel="icon" type="image/png" href="img/smaragd.png">
+  <title>Smaragd Kozmetika • Referenciák</title>
+  <link rel="icon" type="image/jpg" href="img/smaragd.jpg">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -14,10 +14,10 @@
 <header class="site-header">
   <div class="header-inner container">
     <a class="brand" href="index.html">
-      <img src="img/smaragd.png" alt="Logó">
+      <img src="img/smaragd.jpg" alt="Logó">
       <div class="name-wrap">
         <div class="name">Smaragd Kozmetika</div>
-        <span class="tag">Minőségi bőrápolás</span>
+        <span class="tag">Referenciák</span>
       </div>
     </a>
     <button class="hamburger" id="hamburgerBtn">
@@ -27,23 +27,56 @@
 </header>
 
 <main class="container">
-  <section class="card pad" style="margin-top: 20px; text-align: center;">
-    <h1>Referenciák</h1>
-    <p>Néhány korábbi munkám</p>
-  </section>
+  <section class="card pad" style="margin-top: 20px; margin-bottom: 40px;">
+    <h1 style="text-align:center; margin-bottom: 10px; font-size: 1.6rem; color: var(--emerald-dark);">Referenciák</h1>
+    <p style="text-align:center; color: var(--muted); margin-bottom: 40px; font-size: 0.95rem;">Tekintsd meg legutóbbi munkáimat és a látványos átalakulásokat.</p>
 
-  <div class="ref-list" style="margin-top:20px; display: grid; gap: 20px;">
-    <div class="card pad">
-      <img src="img/ref1.jpg" alt="Munka 1">
-      <h3 style="margin-top:15px;">Mélyhidratálás</h3>
-      <p>Látványos javulás egyetlen alkalom után.</p>
+    <div class="comparison-wrapper">
+      <div class="comparison-header">Arctisztító kezelés</div>
+      <div class="comparison-container">
+        <div class="photo-box before">
+          <img src="img/ref1.jpg" alt="Arctisztítás előtt">
+          <span class="label">Előtte</span>
+        </div>
+        <div class="photo-box after">
+          <img src="img/ref2.jpg" alt="Arctisztítás utána">
+          <span class="label">Utána</span>
+        </div>
+      </div>
     </div>
-    <div class="card pad">
-      <img src="img/ref2.jpg" alt="Munka 2">
-      <h3 style="margin-top:15px;">Szemöldök styling</h3>
-      <p>Természetes ív és szín.</p>
+
+    <div class="comparison-wrapper">
+      <div class="comparison-header">Szemöldök formázás & festés</div>
+      <div class="comparison-container">
+        <div class="photo-box before">
+          <img src="img/ref3.jpg" alt="Szemöldök előtt">
+          <span class="label">Előtte</span>
+        </div>
+        <div class="photo-box after">
+          <img src="img/ref4.jpg" alt="Szemöldök utána">
+          <span class="label">Utána</span>
+        </div>
+      </div>
     </div>
-  </div>
+
+    <div class="comparison-wrapper">
+      <div class="comparison-header">Anti-Aging feltöltés</div>
+      <div class="comparison-container">
+        <div class="photo-box before">
+          <img src="img/ref5.jpg" alt="Kezelés előtt">
+          <span class="label">Előtte</span>
+        </div>
+        <div class="photo-box after">
+          <img src="img/ref6.jpg" alt="Kezelés utána">
+          <span class="label">Utána</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--stroke);">
+      <a href="idopont.html" class="btn-main">Időpontfoglalás</a>
+    </div>
+  </section>
 </main>
 
 <nav class="nav-drawer">
@@ -52,14 +85,14 @@
     <div class="nav-header">
       <button class="nav-close" id="navClose">✕</button>
     </div>
-<div class="nav-links">
-  <a href="index.html">Rólunk</a>
-  <a href="szolgaltatasok.html">Szolgáltatások</a>
-  <a href="referencia.html">Referencia</a>
-  <a href="arlista.html">Árlista</a>
-  <a href="idopont.html">Időpontfoglalás</a>
-  <a href="elerhetoseg.html">Elérhetőségek</a>
-</div>
+    <div class="nav-links">
+      <a href="index.html">Rólunk</a>
+      <a href="szolgaltatasok.html">Szolgáltatások</a>
+      <a href="referencia.html" class="active">Referencia</a>
+      <a href="arlista.html">Árlista</a>
+      <a href="idopont.html">Időpontfoglalás</a>
+      <a href="elerhetoseg.html">Elérhetőségek</a>
+    </div>
   </div>
 </nav>
 

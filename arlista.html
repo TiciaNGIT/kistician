@@ -2,9 +2,8 @@
 <html lang="hu">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Smaragd Kozmetika • Árlista</title>
-  <link rel="icon" type="image/png" href="img/smaragd.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1"> <title>Smaragd Kozmetika • Árlista</title>
+  <link rel="icon" type="image/jpg" href="img/smaragd.jpg">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -14,10 +13,10 @@
 <header class="site-header">
   <div class="header-inner container">
     <a class="brand" href="index.html">
-      <img src="img/smaragd.png" alt="Logó">
+      <img src="img/smaragd.jpg" alt="Logó">
       <div class="name-wrap">
         <div class="name">Smaragd Kozmetika</div>
-        <span class="tag">Minőségi bőrápolás</span>
+        <span class="tag">Árlista</span>
       </div>
     </a>
     <button class="hamburger" id="hamburgerBtn">
@@ -26,20 +25,28 @@
   </div>
 </header>
 
-<main class="container">
-  <section class="section" style="margin-top: 20px;">
-    <div class="carousel price-carousel" data-carousel>
-      <div class="carousel-track">
-        <div class="carousel-slide"><img src="/img/price1.jpg" alt="Árlista 1"></div>
-        <div class="carousel-slide"><img src="/img/price2.jpg" alt="Árlista 2"></div>
-        <div class="carousel-slide"><img src="/img/price3.jpg" alt="Árlista 3"></div>
-        <div class="carousel-slide"><img src="/img/price4.jpg" alt="Árlista 4"></div>
-        <div class="carousel-slide"><img src="/img/price5.png" alt="Árlista 5"></div>
-      </div>
-      <div class="dots"></div>
-    </div>
-  </section>
+<main class="container price-container">
+  
+  <h1 style="text-align: center; color: var(--emerald-dark); margin: 20px 0 10px;">Árlista</h1>
+
+  <div class="price-controls sticky-controls">
+    <button class="price-tab active" onclick="changePrice('img/price1.jpg', this)">Arckezelés</button>
+    <button class="price-tab" onclick="changePrice('img/price2.jpg', this)">Gyanta & smink</button>
+    <button class="price-tab" onclick="changePrice('img/price3.jpg', this)">Szempilla</button>
+    <button class="price-tab" onclick="changePrice('img/price4.jpg', this)">Masszázs</button>
+  </div>
+
+  <div class="price-viewer-simple">
+    <img id="mainPriceImg" src="img/price1.jpg" alt="Árlista oldal" onclick="openZoom(this.src)">
+    <div class="zoom-icon-overlay">🔍 Nagyításhoz kattints</div>
+  </div>
+
 </main>
+
+<div id="zoomModal" class="zoom-modal" onclick="closeZoom()">
+  <span class="close-zoom">&times;</span>
+  <img class="zoom-modal-content" id="zoomImg">
+</div>
 
 <nav class="nav-drawer">
   <div class="backdrop" id="navBackdrop"></div>
@@ -51,7 +58,7 @@
       <a href="index.html">Rólunk</a>
       <a href="szolgaltatasok.html">Szolgáltatások</a>
       <a href="referencia.html">Referencia</a>
-      <a href="arlista.html">Árlista</a>
+      <a href="arlista.html" class="active">Árlista</a>
       <a href="idopont.html">Időpontfoglalás</a>
       <a href="elerhetoseg.html">Elérhetőségek</a>
     </div>
@@ -59,5 +66,36 @@
 </nav>
 
 <script src="js/script.js"></script>
+
+<script>
+  // Kép váltása
+  function changePrice(imageSrc, btnElement) {
+    const img = document.getElementById('mainPriceImg');
+    img.style.opacity = '0';
+    setTimeout(() => {
+      img.src = imageSrc;
+      img.style.opacity = '1';
+    }, 200);
+    document.querySelectorAll('.price-tab').forEach(btn => btn.classList.remove('active'));
+    btnElement.classList.add('active');
+  }
+
+  // Nagyító megnyitása
+  function openZoom(src) {
+    const modal = document.getElementById("zoomModal");
+    const modalImg = document.getElementById("zoomImg");
+    modal.style.display = "flex"; // Megjelenítés
+    modalImg.src = src;
+    document.body.style.overflow = "hidden"; // Háttér görgetés letiltása
+  }
+
+  // Nagyító bezárása
+  function closeZoom() {
+    const modal = document.getElementById("zoomModal");
+    modal.style.display = "none";
+    document.body.style.overflow = ""; // Görgetés visszakapcsolása
+  }
+</script>
+
 </body>
 </html>
