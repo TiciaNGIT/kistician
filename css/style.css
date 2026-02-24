@@ -443,3 +443,23 @@ img { max-width: 100%; height: auto; display: block; }
     font-size: 0.8rem;
   }
 }
+
+/* Főoldali két kártya elrendezése */
+.home-grid-wrapper {
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
+  align-items: stretch;
+}
+
+.home-grid-wrapper .card {
+  flex: 1; /* Egyforma szélesség */
+  margin-top: 0 !important;
+}
+
+/* Mobilon ugorjanak egymás alá */
+@media (max-width: 800px) {
+  .home-grid-wrapper {
+    flex-direction: column;
+  }
+}

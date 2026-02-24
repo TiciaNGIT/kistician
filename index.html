@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Főoldal</title>
-  <link rel="icon" type="image/jpg" href="img/smaragd.jpg">
+  <title>Smaragd Kozmetika • Főoldal</title>
+  <link rel="icon" type="image/jpeg" href="img/smaragd.jpg">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -27,31 +27,41 @@
 </header>
 
 <main class="container">
-  <section class="card pad" style="margin-top: 30px;">
-    <div class="intro-grid">
-      <div class="intro-image">
-        <img src="img/smaragd.jpg" alt="Smaragd Kozmetika" style="border-radius: 50%; width: 150px; height: 150px; object-fit: cover; margin: 0 auto; border: 3px solid var(--emerald);">
-      </div>
-
-      <div class="intro-content" style="text-align: center; margin-top: 20px;">
-        <h1 style="color: var(--emerald-dark); margin: 10px 0;">Szalkai Niki vagyok</h1>
-        <p style="font-size: 1.1rem; color: var(--muted); max-width: 600px; margin: 0 auto;">
-          Hiszek abban, hogy a szépségápolás nem csak a külsőről, hanem a belső egyensúlyról is szól. 
-          Várlak szeretettel Kiskunfélegyháza szívében, ahol professzionális kezelésekkel és 
-          prémium alapanyagokkal segítek, hogy bőröd újra ragyogó és egészséges legyen.
-        </p>
-        
-        <div style="margin-top: 30px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-          <a href="idopont.html" class="btn-main">Időpontot foglalok</a>
-          <a href="szolgaltatasok.html" class="btn-outline">Szolgáltatások</a>
+  <div class="home-grid-wrapper">
+    
+    <section class="card pad">
+      <div class="intro-grid">
+        <div class="intro-image">
+          <img src="img/smaragd.jpg" alt="Smaragd Kozmetika" style="border-radius: 50%; width: 120px; height: 120px; object-fit: cover; margin: 0 auto; border: 3px solid var(--emerald);">
+        </div>
+        <div class="intro-content" style="text-align: center; margin-top: 15px;">
+          <h2 style="color: var(--emerald-dark); margin-bottom: 10px;">Toldi Nikolett</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; line-height: 1.6;">
+            Hiszek abban, hogy a szépségápolás nem csak a külsőről, hanem a belső egyensúlyról is szól. Várlak szeretettel Kiskunfélegyháza szívében, ahol professzionális kezelésekkel segítek bőröd ragyogásában.
+          </p>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <div style="text-align: center; margin-top: 40px;">
-    <p style="font-weight: 800; color: var(--emerald-dark); letter-spacing: 1px; text-transform: uppercase; font-size: 0.8rem;">
-    </p>
+    <section class="card pad">
+      <div class="intro-grid">
+        <div class="intro-image">
+          <img src="img/smaragd.jpg" alt="Smaragd Kozmetika" style="border-radius: 50%; width: 120px; height: 120px; object-fit: cover; margin: 0 auto; border: 3px solid var(--emerald);">
+        </div>
+        <div class="intro-content" style="text-align: center; margin-top: 15px;">
+          <h2 style="color: var(--emerald-dark); margin-bottom: 10px;">Ugró József</h2>
+          <p style="color: var(--muted); font-size: 0.9rem; line-height: 1.6;">
+            Frissítő és kényeztető masszázsaimat úgy alakítottam ki,
+             hogy segítsenek magad mögött hagyni a mindennapi stresszt. Legyen szó egy feszültségoldó testmasszázsról vagy egy speciális arcmasszázsról.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div style="text-align: center; margin-top: 30px; margin-bottom: 40px;">
+    <a href="szolgaltatasok.html" class="btn-main" style="padding: 15px 40px; font-size: 1.1rem;">Szolgáltatások</a>
   </div>
 </main>
 
@@ -62,7 +72,7 @@
       <button class="nav-close" id="navClose">✕</button>
     </div>
     <div class="nav-links">
-      <a href="index.html">Rólunk</a>
+      <a href="index.html" class="active">Rólunk</a>
       <a href="szolgaltatasok.html">Szolgáltatások</a>
       <a href="referencia.html">Referencia</a>
       <a href="arlista.html">Árlista</a>
@@ -73,5 +83,6 @@
 </nav>
 
 <script src="js/script.js"></script>
+
 </body>
 </html>
