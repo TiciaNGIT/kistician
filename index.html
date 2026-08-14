@@ -15,7 +15,6 @@
 
     <title>Kis Ticián</title>
 
-    <!-- FŐOLDAL FAVICON -->
     <link
         rel="icon"
         id="favicon"
@@ -32,13 +31,9 @@
     <style>
 
         :root {
-
             --bg: #222529;
-            --bg-soft: #282c30;
-
             --panel: #2d3136;
             --panel-hover: #363b40;
-
             --border: #41474d;
 
             --text: #ffffff;
@@ -46,15 +41,12 @@
 
             --green: #8bb52a;
             --green-dark: #6f941e;
-
         }
 
 
         * {
             box-sizing: border-box;
-
-            -webkit-tap-highlight-color:
-                transparent;
+            -webkit-tap-highlight-color: transparent;
         }
 
 
@@ -65,51 +57,39 @@
 
         html,
         body {
-
             margin: 0;
             padding: 0;
 
             width: 100%;
             min-height: 100%;
 
-            background:
-                var(--bg);
+            background: var(--bg);
 
-            color:
-                var(--text);
+            color: var(--text);
 
             font-family:
                 Bahnschrift,
                 "Segoe UI",
                 Arial,
                 sans-serif;
-
         }
 
 
         body {
-
             min-height: 100vh;
             min-height: 100dvh;
-
         }
-
 
 
         /* ==============================
            LAUNCHER
         ============================== */
 
-
         .launcher {
-
             width: 100%;
-
             max-width: 760px;
 
-            margin:
-                0
-                auto;
+            margin: 0 auto;
 
             padding:
                 22px
@@ -118,34 +98,27 @@
                     35px +
                     env(safe-area-inset-bottom)
                 );
-
         }
-
 
 
         /* ==============================
            FEJLÉC
         ============================== */
 
-
         .header {
-
             text-align: center;
 
             padding:
                 22px
                 5px
                 32px;
-
         }
 
 
         .header h1 {
-
             margin: 0;
 
-            color:
-                #ffffff;
+            color: #ffffff;
 
             font-size:
                 clamp(
@@ -154,51 +127,37 @@
                     36px
                 );
 
-            line-height:
-                1.1;
+            line-height: 1.1;
 
-            font-weight:
-                700;
+            font-weight: 700;
 
-            letter-spacing:
-                .01em;
-
+            letter-spacing: .01em;
         }
 
 
         .header p {
-
             margin:
                 8px
                 0
                 0;
 
-            color:
-                var(--muted);
+            color: var(--muted);
 
-            font-size:
-                13px;
+            font-size: 13px;
 
-            font-weight:
-                600;
+            font-weight: 600;
 
-            text-transform:
-                uppercase;
+            text-transform: uppercase;
 
-            letter-spacing:
-                .14em;
-
+            letter-spacing: .14em;
         }
-
 
 
         /* ==============================
            ALKALMAZÁSOK
         ============================== */
 
-
         .apps-grid {
-
             display: grid;
 
             grid-template-columns:
@@ -207,35 +166,26 @@
                     minmax(0, 1fr)
                 );
 
-            gap:
-                14px;
-
+            gap: 14px;
         }
-
 
 
         /* ==============================
            KÁRTYA
         ============================== */
 
-
         .app-card {
-
             min-width: 0;
 
             display: flex;
 
-            flex-direction:
-                column;
+            flex-direction: column;
 
-            align-items:
-                center;
+            align-items: center;
 
-            justify-content:
-                flex-start;
+            justify-content: flex-start;
 
-            gap:
-                11px;
+            gap: 11px;
 
             padding:
                 14px
@@ -247,20 +197,15 @@
                 solid
                 var(--border);
 
-            border-radius:
-                20px;
+            border-radius: 20px;
 
-            background:
-                var(--panel);
+            background: var(--panel);
 
-            color:
-                var(--text);
+            color: var(--text);
 
-            text-decoration:
-                none;
+            text-decoration: none;
 
-            cursor:
-                pointer;
+            cursor: pointer;
 
             box-shadow:
                 0
@@ -283,32 +228,23 @@
                 border-color
                 .15s
                 ease;
-
         }
 
 
         .app-card:active {
+            transform: scale(.95);
 
-            transform:
-                scale(.95);
+            background: var(--panel-hover);
 
-            background:
-                var(--panel-hover);
-
-            border-color:
-                var(--green);
-
+            border-color: var(--green);
         }
-
 
 
         /* ==============================
            IKON
         ============================== */
 
-
         .icon-box {
-
             width:
                 clamp(
                     68px,
@@ -316,25 +252,19 @@
                     88px
                 );
 
-            aspect-ratio:
-                1 / 1;
+            aspect-ratio: 1 / 1;
 
             display: flex;
 
-            align-items:
-                center;
+            align-items: center;
 
-            justify-content:
-                center;
+            justify-content: center;
 
-            overflow:
-                hidden;
+            overflow: hidden;
 
-            border-radius:
-                20px;
+            border-radius: 20px;
 
-            background:
-                #ffffff;
+            background: #ffffff;
 
             box-shadow:
                 0
@@ -346,56 +276,34 @@
                     0,
                     .24
                 );
-
         }
 
 
         .icon-box img {
+            width: 100%;
+            height: 100%;
 
-            width:
-                100%;
+            object-fit: contain;
 
-            height:
-                100%;
+            padding: 7px;
 
-            /*
-                FONTOS:
-                nem vágja le a logót
-            */
-
-            object-fit:
-                contain;
-
-            padding:
-                7px;
-
-            display:
-                block;
-
+            display: block;
         }
-
 
 
         /* ==============================
            HIÁNYZÓ IKON
         ============================== */
 
-
         .fallback-icon {
-
-            width:
-                100%;
-
-            height:
-                100%;
+            width: 100%;
+            height: 100%;
 
             display: flex;
 
-            align-items:
-                center;
+            align-items: center;
 
-            justify-content:
-                center;
+            justify-content: center;
 
             background:
                 linear-gradient(
@@ -404,96 +312,66 @@
                     var(--green)
                 );
 
-            color:
-                #ffffff;
+            color: #ffffff;
 
-            font-size:
-                30px;
+            font-size: 30px;
 
-            font-weight:
-                700;
-
+            font-weight: 700;
         }
-
 
 
         /* ==============================
            ALKALMAZÁSNÉV
         ============================== */
 
-
         .app-name {
+            width: 100%;
 
-            width:
-                100%;
-
-            min-height:
-                34px;
+            min-height: 34px;
 
             display: flex;
 
-            align-items:
-                flex-start;
+            align-items: flex-start;
 
-            justify-content:
-                center;
+            justify-content: center;
 
-            text-align:
-                center;
+            text-align: center;
 
-            font-size:
-                12px;
+            font-size: 12px;
 
-            line-height:
-                1.3;
+            line-height: 1.3;
 
-            font-weight:
-                600;
+            font-weight: 600;
 
-            overflow-wrap:
-                anywhere;
+            overflow-wrap: anywhere;
 
-            hyphens:
-                auto;
-
+            hyphens: auto;
         }
-
 
 
         /* ==============================
            BETÖLTÉS
         ============================== */
 
-
         .loading,
         .message {
-
-            grid-column:
-                1 / -1;
+            grid-column: 1 / -1;
 
             padding:
                 55px
                 20px;
 
-            text-align:
-                center;
+            text-align: center;
 
-            color:
-                var(--muted);
+            color: var(--muted);
 
-            font-size:
-                14px;
-
+            font-size: 14px;
         }
 
 
         .spinner {
-
-            width:
-                32px;
-
-            height:
-                32px;
+            width: 32px;
+            height: 32px;
 
             margin:
                 0
@@ -505,329 +383,100 @@
                 solid
                 #464c52;
 
-            border-top-color:
-                var(--green);
+            border-top-color: var(--green);
 
-            border-radius:
-                50%;
+            border-radius: 50%;
 
             animation:
                 spin
                 .75s
                 linear
                 infinite;
-
         }
 
 
         @keyframes spin {
-
             to {
-
-                transform:
-                    rotate(360deg);
-
+                transform: rotate(360deg);
             }
-
         }
-
 
 
         /* ==============================
            PROJEKT NÉZET
         ============================== */
 
-
         .project-view {
+            position: fixed;
 
-            position:
-                fixed;
+            inset: 0;
 
-            inset:
-                0;
+            z-index: 9999;
 
-            z-index:
-                9999;
+            width: 100%;
 
-            display: flex;
+            height: 100vh;
+            height: 100dvh;
 
-            flex-direction:
-                column;
+            background: #ffffff;
 
-            width:
-                100%;
-
-            height:
-                100vh;
-
-            height:
-                100dvh;
-
-            background:
-                var(--bg);
-
+            overflow: hidden;
         }
-
-
-
-        /* ==============================
-           PROJEKT FEJLÉC
-        ============================== */
-
-
-        .project-toolbar {
-
-            flex:
-                0
-                0
-                auto;
-
-            min-height:
-                calc(
-                    52px +
-                    env(safe-area-inset-top)
-                );
-
-            padding:
-                env(safe-area-inset-top)
-                10px
-                0;
-
-            display: grid;
-
-            grid-template-columns:
-                46px
-                1fr
-                46px;
-
-            align-items:
-                center;
-
-            gap:
-                8px;
-
-            background:
-                #282c30;
-
-            border-bottom:
-                1px
-                solid
-                #3e444a;
-
-            box-shadow:
-                0
-                4px
-                15px
-                rgba(
-                    0,
-                    0,
-                    0,
-                    .18
-                );
-
-        }
-
-
-
-        /* ==============================
-           VISSZA GOMB
-        ============================== */
-
-
-        .back-button {
-
-            width:
-                42px;
-
-            height:
-                42px;
-
-            border:
-                0;
-
-            border-radius:
-                11px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--green-dark),
-                    var(--green)
-                );
-
-            color:
-                #ffffff;
-
-            font-family:
-                inherit;
-
-            font-size:
-                25px;
-
-            line-height:
-                1;
-
-            font-weight:
-                700;
-
-            cursor:
-                pointer;
-
-        }
-
-
-        .back-button:active {
-
-            transform:
-                scale(.94);
-
-        }
-
-
-
-        /* ==============================
-           PROJEKT CÍM
-        ============================== */
-
-
-        .project-title {
-
-            min-width:
-                0;
-
-            overflow:
-                hidden;
-
-            text-overflow:
-                ellipsis;
-
-            white-space:
-                nowrap;
-
-            text-align:
-                center;
-
-            color:
-                #ffffff;
-
-            font-size:
-                13px;
-
-            font-weight:
-                600;
-
-        }
-
-
-
-        /* ==============================
-           MINI IKON
-        ============================== */
-
-
-        .project-mini-icon {
-
-            width:
-                38px;
-
-            height:
-                38px;
-
-            justify-self:
-                end;
-
-            border-radius:
-                9px;
-
-            object-fit:
-                contain;
-
-            padding:
-                3px;
-
-            background:
-                #ffffff;
-
-        }
-
 
 
         /* ==============================
            IFRAME
         ============================== */
 
-
         .project-frame {
+            display: block;
 
-            flex:
-                1
-                1
-                auto;
+            width: 100%;
+            height: 100%;
 
-            width:
-                100%;
+            border: 0;
 
-            min-height:
-                0;
+            margin: 0;
+            padding: 0;
 
-            border:
-                0;
-
-            background:
-                #ffffff;
-
+            background: #ffffff;
         }
-
 
 
         /* ==============================
            TABLET / DESKTOP
         ============================== */
 
-
-        @media (
-            min-width: 520px
-        ) {
+        @media (min-width: 520px) {
 
             .apps-grid {
-
                 grid-template-columns:
                     repeat(
                         4,
                         minmax(0, 1fr)
                     );
-
             }
 
 
             .app-name {
-
-                font-size:
-                    13px;
-
+                font-size: 13px;
             }
 
         }
-
 
 
         /* ==============================
            KIS TELEFON
         ============================== */
 
-
-        @media (
-            max-width: 350px
-        ) {
+        @media (max-width: 350px) {
 
             .apps-grid {
-
                 grid-template-columns:
                     repeat(
                         2,
                         minmax(0, 1fr)
                     );
-
             }
 
         }
@@ -848,9 +497,7 @@
     id="launcher"
 >
 
-    <header
-        class="header"
-    >
+    <header class="header">
 
         <h1>
             Kis Ticián
@@ -868,13 +515,9 @@
         id="appsGrid"
     >
 
-        <div
-            class="loading"
-        >
+        <div class="loading">
 
-            <div
-                class="spinner"
-            ></div>
+            <div class="spinner"></div>
 
             Projektek betöltése...
 
@@ -895,35 +538,6 @@
     id="projectView"
     hidden
 >
-
-    <div
-        class="project-toolbar"
-    >
-
-        <button
-            class="back-button"
-            id="backButton"
-            type="button"
-            aria-label="Vissza"
-        >
-            ‹
-        </button>
-
-
-        <div
-            class="project-title"
-            id="projectTitle"
-        ></div>
-
-
-        <img
-            class="project-mini-icon"
-            id="projectMiniIcon"
-            alt=""
-        >
-
-    </div>
-
 
     <iframe
         class="project-frame"
@@ -994,24 +608,6 @@
         );
 
 
-    const projectTitle =
-        document.getElementById(
-            "projectTitle"
-        );
-
-
-    const projectMiniIcon =
-        document.getElementById(
-            "projectMiniIcon"
-        );
-
-
-    const backButton =
-        document.getElementById(
-            "backButton"
-        );
-
-
     const favicon =
         document.getElementById(
             "favicon"
@@ -1075,9 +671,7 @@
                 );
 
 
-            if (
-                !response.ok
-            ) {
+            if (!response.ok) {
 
                 throw new Error(
                     "GitHub API hiba: " +
@@ -1144,9 +738,7 @@
 
         }
 
-        catch (
-            error
-        ) {
+        catch (error) {
 
             console.error(
                 error
@@ -1245,8 +837,6 @@
         );
 
 
-        /* IKON DOBOZ */
-
         const iconBox =
             document.createElement(
                 "div"
@@ -1256,8 +846,6 @@
         iconBox.className =
             "icon-box";
 
-
-        /* IKON */
 
         const icon =
             document.createElement(
@@ -1312,8 +900,6 @@
             };
 
 
-        /* NÉV */
-
         const nev =
             document.createElement(
                 "div"
@@ -1360,42 +946,10 @@
         historyHozzaadas
     ) {
 
-        const src =
+        projectFrame.src =
             projektUrl(
                 mappaNev
             );
-
-
-        projectTitle.textContent =
-            mappaNev;
-
-
-        projectMiniIcon.src =
-            ikonUrl(
-                mappaNev
-            );
-
-
-        projectMiniIcon.onerror =
-            function() {
-
-                this.style.visibility =
-                    "hidden";
-
-            };
-
-
-        projectMiniIcon.onload =
-            function() {
-
-                this.style.visibility =
-                    "visible";
-
-            };
-
-
-        projectFrame.src =
-            src;
 
 
         launcher.hidden =
@@ -1406,9 +960,12 @@
             false;
 
 
+        document.body.style.overflow =
+            "hidden";
+
+
         document.title =
-            mappaNev +
-            " – Kis Ticián";
+            mappaNev;
 
 
         projektFavicon(
@@ -1442,9 +999,7 @@
        PROJEKT BEZÁRÁSA
     ================================== */
 
-    function projektBezarasa(
-        historyHozzaadas
-    ) {
+    function projektBezarasa() {
 
         projectFrame.src =
             "about:blank";
@@ -1458,55 +1013,17 @@
             false;
 
 
+        document.body.style.overflow =
+            "";
+
+
         document.title =
             "Kis Ticián";
 
 
         launcherFavicon();
 
-
-        if (
-            historyHozzaadas
-        ) {
-
-            history.pushState(
-                {},
-                "",
-                window.location.pathname
-            );
-
-        }
-
     }
-
-
-
-    /* ==================================
-       VISSZA
-    ================================== */
-
-    backButton.addEventListener(
-        "click",
-        () => {
-
-            if (
-                window.location.hash
-            ) {
-
-                history.back();
-
-            }
-
-            else {
-
-                projektBezarasa(
-                    false
-                );
-
-            }
-
-        }
-    );
 
 
 
@@ -1540,13 +1057,9 @@
                 .trim();
 
 
-        if (
-            !hash
-        ) {
+        if (!hash) {
 
-            projektBezarasa(
-                false
-            );
+            projektBezarasa();
 
             return;
 
@@ -1565,9 +1078,7 @@
             );
 
 
-        if (
-            projekt
-        ) {
+        if (projekt) {
 
             projektMegnyitasa(
                 projekt.name,
@@ -1578,9 +1089,7 @@
 
         else {
 
-            projektBezarasa(
-                false
-            );
+            projektBezarasa();
 
         }
 
@@ -1738,9 +1247,7 @@
             szoveg.trim();
 
 
-        if (
-            !tisztitott
-        ) {
+        if (!tisztitott) {
 
             return "?";
 
