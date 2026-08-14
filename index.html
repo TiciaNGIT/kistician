@@ -99,16 +99,6 @@
             letter-spacing: .01em;
         }
 
-        /*
-            Az eredeti counter elem megmarad,
-            de lentebb, a kép alatti .image-counter-row
-            részben jelenik meg.
-        */
-
-        .header .counter {
-            display: none;
-        }
-
         .counter {
             min-width: 66px;
 
@@ -748,13 +738,6 @@
             Süveges Autósiskola képkeretező
         </h1>
 
-        <div
-            class="counter"
-            id="counterTop"
-        >
-            0 / 0
-        </div>
-
     </div>
 
 
@@ -853,8 +836,6 @@
 
         <div class="controls">
 
-            <!-- KÉP SZERKESZTÉSE -->
-
             <div class="image-block">
 
                 <div class="settings image-settings">
@@ -920,8 +901,6 @@
 
             </div>
 
-
-            <!-- GRATULÁLUNK -->
 
             <div class="congrats-block">
 
@@ -1071,8 +1050,6 @@
 
             </div>
 
-
-            <!-- NÉV -->
 
             <div class="name-block">
 
@@ -1241,6 +1218,9 @@
 
 <script>
 
+const PREVIEW_MAX_SIZE = 1200;
+
+
 const imageInput =
     document.getElementById("imageInput");
 
@@ -1344,6 +1324,12 @@ let images = [];
 
 let currentIndex = 0;
 
+let renderScheduled = false;
+
+let previewRenderVersion = 0;
+
+let currentPreviewUrl = null;
+
 
 const logo =
     new Image();
@@ -1356,7 +1342,7 @@ logo.onload = () => {
 
     logoReady = true;
 
-    render();
+    scheduleRender();
 
 };
 
@@ -1365,7 +1351,7 @@ logo.onerror = () => {
 
     logoReady = false;
 
-    render();
+    scheduleRender();
 
 };
 
@@ -1381,6 +1367,7 @@ imageInput.addEventListener(
 );
 
 
+
 brightness.addEventListener(
     "input",
     () => {
@@ -1390,13 +1377,21 @@ brightness.addEventListener(
 
         if (!images.length) return;
 
-        images[currentIndex].brightness =
+        const item =
+            images[currentIndex];
+
+        item.brightness =
             Number(brightness.value);
 
-        render();
+        invalidateAdjustedPreview(
+            item
+        );
+
+        scheduleRender();
 
     }
 );
+
 
 
 contrast.addEventListener(
@@ -1408,13 +1403,21 @@ contrast.addEventListener(
 
         if (!images.length) return;
 
-        images[currentIndex].contrast =
+        const item =
+            images[currentIndex];
+
+        item.contrast =
             Number(contrast.value);
 
-        render();
+        invalidateAdjustedPreview(
+            item
+        );
+
+        scheduleRender();
 
     }
 );
+
 
 
 nameText.addEventListener(
@@ -1426,10 +1429,11 @@ nameText.addEventListener(
         images[currentIndex].name.text =
             nameText.value;
 
-        render();
+        scheduleRender();
 
     }
 );
+
 
 
 namePosition.addEventListener(
@@ -1441,10 +1445,11 @@ namePosition.addEventListener(
         images[currentIndex].name.position =
             namePosition.value;
 
-        render();
+        scheduleRender();
 
     }
 );
+
 
 
 nameFont.addEventListener(
@@ -1459,10 +1464,11 @@ nameFont.addEventListener(
         images[currentIndex].name.fontSize =
             Number(nameFont.value);
 
-        render();
+        scheduleRender();
 
     }
 );
+
 
 
 nameOpacity.addEventListener(
@@ -1477,10 +1483,11 @@ nameOpacity.addEventListener(
         images[currentIndex].name.opacity =
             Number(nameOpacity.value) / 100;
 
-        render();
+        scheduleRender();
 
     }
 );
+
 
 
 nameColorPreset.addEventListener(
@@ -1500,12 +1507,13 @@ nameColorPreset.addEventListener(
             images[currentIndex].name.color =
                 nameColorPreset.value;
 
-            render();
+            scheduleRender();
 
         }
 
     }
 );
+
 
 
 nameColor.addEventListener(
@@ -1520,7 +1528,7 @@ nameColor.addEventListener(
         images[currentIndex].name.color =
             nameColor.value;
 
-        render();
+        scheduleRender();
 
     }
 );
@@ -1536,10 +1544,11 @@ congratsText.addEventListener(
         images[currentIndex].congrats.text =
             congratsText.value;
 
-        render();
+        scheduleRender();
 
     }
 );
+
 
 
 congratsPosition.addEventListener(
@@ -1551,10 +1560,11 @@ congratsPosition.addEventListener(
         images[currentIndex].congrats.position =
             congratsPosition.value;
 
-        render();
+        scheduleRender();
 
     }
 );
+
 
 
 congratsFont.addEventListener(
@@ -1569,10 +1579,11 @@ congratsFont.addEventListener(
         images[currentIndex].congrats.fontSize =
             Number(congratsFont.value);
 
-        render();
+        scheduleRender();
 
     }
 );
+
 
 
 congratsOpacity.addEventListener(
@@ -1587,10 +1598,11 @@ congratsOpacity.addEventListener(
         images[currentIndex].congrats.opacity =
             Number(congratsOpacity.value) / 100;
 
-        render();
+        scheduleRender();
 
     }
 );
+
 
 
 congratsColorPreset.addEventListener(
@@ -1610,12 +1622,13 @@ congratsColorPreset.addEventListener(
             images[currentIndex].congrats.color =
                 congratsColorPreset.value;
 
-            render();
+            scheduleRender();
 
         }
 
     }
 );
+
 
 
 congratsColor.addEventListener(
@@ -1630,7 +1643,7 @@ congratsColor.addEventListener(
         images[currentIndex].congrats.color =
             congratsColor.value;
 
-        render();
+        scheduleRender();
 
     }
 );
@@ -1667,6 +1680,10 @@ async function loadImages(event) {
     if (!files.length) return;
 
 
+    downloadBtn.disabled =
+        true;
+
+
     images =
         await Promise.all(
             files.map(
@@ -1683,7 +1700,7 @@ async function loadImages(event) {
 
     loadSettings();
 
-    render();
+    scheduleRender();
 
 }
 
@@ -1708,10 +1725,25 @@ function fileToImage(file) {
                     image.onload =
                         () => {
 
+                            const previewSource =
+                                createPreviewSource(
+                                    image
+                                );
+
+
                             resolve({
 
                                 image:
                                     image,
+
+                                previewSource:
+                                    previewSource,
+
+                                adjustedPreview:
+                                    null,
+
+                                adjustedKey:
+                                    "",
 
                                 filename:
                                     file.name,
@@ -1776,6 +1808,320 @@ function fileToImage(file) {
             );
 
         }
+    );
+
+}
+
+
+
+function createPreviewSource(
+    image
+) {
+
+    const originalWidth =
+        image.naturalWidth;
+
+
+    const originalHeight =
+        image.naturalHeight;
+
+
+    const maxDimension =
+        Math.max(
+            originalWidth,
+            originalHeight
+        );
+
+
+    const scale =
+        Math.min(
+            1,
+            PREVIEW_MAX_SIZE /
+            maxDimension
+        );
+
+
+    const width =
+        Math.round(
+            originalWidth *
+            scale
+        );
+
+
+    const height =
+        Math.round(
+            originalHeight *
+            scale
+        );
+
+
+    const sourceCanvas =
+        document.createElement(
+            "canvas"
+        );
+
+
+    sourceCanvas.width =
+        width;
+
+
+    sourceCanvas.height =
+        height;
+
+
+    const ctx =
+        sourceCanvas.getContext(
+            "2d",
+            {
+                alpha: false
+            }
+        );
+
+
+    ctx.drawImage(
+        image,
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    return sourceCanvas;
+
+}
+
+
+
+function invalidateAdjustedPreview(
+    item
+) {
+
+    item.adjustedKey =
+        "";
+
+}
+
+
+
+function getAdjustedPreview(
+    item
+) {
+
+    const key =
+        item.brightness +
+        "_" +
+        item.contrast;
+
+
+    if (
+        item.adjustedPreview &&
+        item.adjustedKey === key
+    ) {
+
+        return item.adjustedPreview;
+
+    }
+
+
+    const source =
+        item.previewSource;
+
+
+    const adjusted =
+        document.createElement(
+            "canvas"
+        );
+
+
+    adjusted.width =
+        source.width;
+
+
+    adjusted.height =
+        source.height;
+
+
+    const ctx =
+        adjusted.getContext(
+            "2d",
+            {
+                willReadFrequently: true,
+                alpha: false
+            }
+        );
+
+
+    ctx.drawImage(
+        source,
+        0,
+        0
+    );
+
+
+    applyBrightnessContrast(
+        ctx,
+        adjusted.width,
+        adjusted.height,
+        item.brightness,
+        item.contrast
+    );
+
+
+    item.adjustedPreview =
+        adjusted;
+
+
+    item.adjustedKey =
+        key;
+
+
+    return adjusted;
+
+}
+
+
+
+function applyBrightnessContrast(
+    ctx,
+    width,
+    height,
+    brightnessValue,
+    contrastValue
+) {
+
+    if (
+        brightnessValue === 100 &&
+        contrastValue === 100
+    ) {
+
+        return;
+
+    }
+
+
+    const imageData =
+        ctx.getImageData(
+            0,
+            0,
+            width,
+            height
+        );
+
+
+    const data =
+        imageData.data;
+
+
+    const brightnessMultiplier =
+        brightnessValue /
+        100;
+
+
+    const contrast =
+        contrastValue -
+        100;
+
+
+    const contrastFactor =
+        (
+            259 *
+            (
+                contrast +
+                255
+            )
+        ) /
+        (
+            255 *
+            (
+                259 -
+                contrast
+            )
+        );
+
+
+    for (
+        let i = 0;
+        i < data.length;
+        i += 4
+    ) {
+
+        let r =
+            data[i] *
+            brightnessMultiplier;
+
+
+        let g =
+            data[i + 1] *
+            brightnessMultiplier;
+
+
+        let b =
+            data[i + 2] *
+            brightnessMultiplier;
+
+
+        r =
+            contrastFactor *
+            (
+                r -
+                128
+            ) +
+            128;
+
+
+        g =
+            contrastFactor *
+            (
+                g -
+                128
+            ) +
+            128;
+
+
+        b =
+            contrastFactor *
+            (
+                b -
+                128
+            ) +
+            128;
+
+
+        data[i] =
+            clampColor(r);
+
+
+        data[i + 1] =
+            clampColor(g);
+
+
+        data[i + 2] =
+            clampColor(b);
+
+    }
+
+
+    ctx.putImageData(
+        imageData,
+        0,
+        0
+    );
+
+}
+
+
+
+function clampColor(
+    value
+) {
+
+    return Math.max(
+        0,
+        Math.min(
+            255,
+            value
+        )
     );
 
 }
@@ -1996,6 +2342,32 @@ function setColorPreset(
 
 
 
+function scheduleRender() {
+
+    if (renderScheduled) {
+        return;
+    }
+
+
+    renderScheduled =
+        true;
+
+
+    requestAnimationFrame(
+        () => {
+
+            renderScheduled =
+                false;
+
+            render();
+
+        }
+    );
+
+}
+
+
+
 function render() {
 
     if (!images.length) return;
@@ -2005,81 +2377,48 @@ function render() {
         images[currentIndex];
 
 
-    renderItem(
-        item,
-        canvas
-    );
-
-
-    previewImage.src =
-        canvas.toDataURL(
-            "image/png"
+    const adjustedPreview =
+        getAdjustedPreview(
+            item
         );
 
-}
+
+    canvas.width =
+        adjustedPreview.width;
 
 
+    canvas.height =
+        adjustedPreview.height;
 
-function renderItem(
-    item,
-    targetCanvas
-) {
 
     const ctx =
-        targetCanvas.getContext(
-            "2d"
+        canvas.getContext(
+            "2d",
+            {
+                alpha: false
+            }
         );
-
-
-    const image =
-        item.image;
-
-
-    const width =
-        image.naturalWidth;
-
-
-    const height =
-        image.naturalHeight;
-
-
-    targetCanvas.width =
-        width;
-
-
-    targetCanvas.height =
-        height;
 
 
     ctx.clearRect(
         0,
         0,
-        width,
-        height
+        canvas.width,
+        canvas.height
     );
-
-
-    ctx.filter =
-        `brightness(${item.brightness}%) contrast(${item.contrast}%)`;
 
 
     ctx.drawImage(
-        image,
+        adjustedPreview,
         0,
-        0,
-        width,
-        height
+        0
     );
-
-
-    ctx.filter =
-        "none";
 
 
     drawTextBlock(
         ctx,
-        width,
-        height,
+        canvas.width,
+        canvas.height,
         item.congrats,
         false
     );
@@ -2087,10 +2426,70 @@ function renderItem(
 
     drawTextBlock(
         ctx,
-        width,
-        height,
+        canvas.width,
+        canvas.height,
         item.name,
         true
+    );
+
+
+    updatePreviewImage();
+
+}
+
+
+
+function updatePreviewImage() {
+
+    const version =
+        ++previewRenderVersion;
+
+
+    canvas.toBlob(
+        blob => {
+
+            if (!blob) {
+                return;
+            }
+
+
+            if (
+                version !==
+                previewRenderVersion
+            ) {
+
+                return;
+
+            }
+
+
+            const url =
+                URL.createObjectURL(
+                    blob
+                );
+
+
+            if (
+                currentPreviewUrl
+            ) {
+
+                URL.revokeObjectURL(
+                    currentPreviewUrl
+                );
+
+            }
+
+
+            currentPreviewUrl =
+                url;
+
+
+            previewImage.src =
+                url;
+
+        },
+        "image/jpeg",
+        0.92
     );
 
 }
@@ -2114,7 +2513,7 @@ function drawTextBlock(
 
     const fontSize =
         Math.max(
-            20,
+            16,
             settings.fontSize *
             width /
             1200
@@ -2453,7 +2852,7 @@ function previousImage() {
 
     loadSettings();
 
-    render();
+    scheduleRender();
 
 }
 
@@ -2472,7 +2871,7 @@ function nextImage() {
 
     loadSettings();
 
-    render();
+    scheduleRender();
 
 }
 
@@ -2517,7 +2916,7 @@ function updateDots() {
 
 
 
-function downloadCurrentImage() {
+async function downloadCurrentImage() {
 
     if (!images.length) return;
 
@@ -2526,74 +2925,383 @@ function downloadCurrentImage() {
         images[currentIndex];
 
 
-    const exportCanvas =
-        document.createElement(
-            "canvas"
+    downloadBtn.disabled =
+        true;
+
+
+    const originalText =
+        downloadBtn.textContent;
+
+
+    downloadBtn.textContent =
+        "KÉP KÉSZÍTÉSE...";
+
+
+    await new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                30
+            )
+    );
+
+
+    try {
+
+        const exportCanvas =
+            document.createElement(
+                "canvas"
+            );
+
+
+        await renderFullResolution(
+            item,
+            exportCanvas
         );
 
 
-    renderItem(
-        item,
-        exportCanvas
-    );
+        exportCanvas.toBlob(
+            blob => {
+
+                if (!blob) {
+
+                    downloadBtn.disabled =
+                        false;
+
+                    downloadBtn.textContent =
+                        originalText;
+
+                    return;
+
+                }
 
 
-    exportCanvas.toBlob(
-        blob => {
-
-            const url =
-                URL.createObjectURL(
-                    blob
-                );
-
-
-            const link =
-                document.createElement(
-                    "a"
-                );
-
-
-            const baseName =
-                item.filename.replace(
-                    /\.[^/.]+$/,
-                    ""
-                );
-
-
-            link.href =
-                url;
-
-
-            link.download =
-                baseName +
-                "_feliratozva.png";
-
-
-            document.body.appendChild(
-                link
-            );
-
-
-            link.click();
-
-
-            link.remove();
-
-
-            setTimeout(
-                () => {
-
-                    URL.revokeObjectURL(
-                        url
+                const url =
+                    URL.createObjectURL(
+                        blob
                     );
 
-                },
-                1000
+
+                const link =
+                    document.createElement(
+                        "a"
+                    );
+
+
+                const baseName =
+                    item.filename.replace(
+                        /\.[^/.]+$/,
+                        ""
+                    );
+
+
+                link.href =
+                    url;
+
+
+                link.download =
+                    baseName +
+                    "_feliratozva.png";
+
+
+                document.body.appendChild(
+                    link
+                );
+
+
+                link.click();
+
+
+                link.remove();
+
+
+                setTimeout(
+                    () => {
+
+                        URL.revokeObjectURL(
+                            url
+                        );
+
+                    },
+                    1500
+                );
+
+
+                downloadBtn.disabled =
+                    false;
+
+
+                downloadBtn.textContent =
+                    originalText;
+
+            },
+            "image/png"
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        alert(
+            "A kép feldolgozása nem sikerült."
+        );
+
+
+        downloadBtn.disabled =
+            false;
+
+
+        downloadBtn.textContent =
+            originalText;
+
+    }
+
+}
+
+
+
+async function renderFullResolution(
+    item,
+    targetCanvas
+) {
+
+    const image =
+        item.image;
+
+
+    const width =
+        image.naturalWidth;
+
+
+    const height =
+        image.naturalHeight;
+
+
+    targetCanvas.width =
+        width;
+
+
+    targetCanvas.height =
+        height;
+
+
+    const ctx =
+        targetCanvas.getContext(
+            "2d",
+            {
+                willReadFrequently: true,
+                alpha: false
+            }
+        );
+
+
+    ctx.drawImage(
+        image,
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    await applyBrightnessContrastChunked(
+        ctx,
+        width,
+        height,
+        item.brightness,
+        item.contrast
+    );
+
+
+    drawTextBlock(
+        ctx,
+        width,
+        height,
+        item.congrats,
+        false
+    );
+
+
+    drawTextBlock(
+        ctx,
+        width,
+        height,
+        item.name,
+        true
+    );
+
+}
+
+
+
+async function applyBrightnessContrastChunked(
+    ctx,
+    width,
+    height,
+    brightnessValue,
+    contrastValue
+) {
+
+    if (
+        brightnessValue === 100 &&
+        contrastValue === 100
+    ) {
+
+        return;
+
+    }
+
+
+    const brightnessMultiplier =
+        brightnessValue /
+        100;
+
+
+    const contrast =
+        contrastValue -
+        100;
+
+
+    const contrastFactor =
+        (
+            259 *
+            (
+                contrast +
+                255
+            )
+        ) /
+        (
+            255 *
+            (
+                259 -
+                contrast
+            )
+        );
+
+
+    const chunkHeight =
+        256;
+
+
+    for (
+        let y = 0;
+        y < height;
+        y += chunkHeight
+    ) {
+
+        const currentHeight =
+            Math.min(
+                chunkHeight,
+                height - y
             );
 
-        },
-        "image/png"
-    );
+
+        const imageData =
+            ctx.getImageData(
+                0,
+                y,
+                width,
+                currentHeight
+            );
+
+
+        const data =
+            imageData.data;
+
+
+        for (
+            let i = 0;
+            i < data.length;
+            i += 4
+        ) {
+
+            let r =
+                data[i] *
+                brightnessMultiplier;
+
+
+            let g =
+                data[i + 1] *
+                brightnessMultiplier;
+
+
+            let b =
+                data[i + 2] *
+                brightnessMultiplier;
+
+
+            r =
+                contrastFactor *
+                (
+                    r -
+                    128
+                ) +
+                128;
+
+
+            g =
+                contrastFactor *
+                (
+                    g -
+                    128
+                ) +
+                128;
+
+
+            b =
+                contrastFactor *
+                (
+                    b -
+                    128
+                ) +
+                128;
+
+
+            data[i] =
+                clampColor(r);
+
+
+            data[i + 1] =
+                clampColor(g);
+
+
+            data[i + 2] =
+                clampColor(b);
+
+        }
+
+
+        ctx.putImageData(
+            imageData,
+            0,
+            y
+        );
+
+
+        if (
+            y %
+            (
+                chunkHeight *
+                4
+            ) === 0
+        ) {
+
+            await new Promise(
+                resolve =>
+                    setTimeout(
+                        resolve,
+                        0
+                    )
+            );
+
+        }
+
+    }
 
 }
 
