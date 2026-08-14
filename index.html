@@ -1,88 +1,1672 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="hu">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Smaragd Kozmetika • Főoldal</title>
-  <link rel="icon" type="image/jpeg" href="img/smaragd.jpg">
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Képfeliratozó</title>
+
+    <style>
+        :root {
+            --green-dark: #36591f;
+            --green: #7d9d24;
+            --green-light: #a8bc23;
+
+            --bg: #edf4e7;
+            --panel: #ffffff;
+            --soft: #f3f7ef;
+
+            --text: #24301f;
+            --border: #d4dfca;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            background: linear-gradient(
+                160deg,
+                #f4f8f0,
+                #dce9d2
+            );
+
+            font-family:
+                Bahnschrift,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            color: var(--text);
+        }
+
+        .app {
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 9px 4px 11px;
+        }
+
+        h1 {
+            margin: 0;
+
+            font-size: 22px;
+            color: var(--green-dark);
+        }
+
+        .counter {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--green-dark);
+        }
+
+        .panel {
+            background: var(--panel);
+
+            border: 1px solid var(--border);
+            border-radius: 16px;
+
+            box-shadow:
+                0 8px 25px rgba(65, 90, 45, 0.10);
+
+            overflow: hidden;
+        }
+
+        .upload {
+            padding: 10px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+
+            padding: 9px;
+
+            border-radius: 10px;
+            border: 1px solid var(--border);
+
+            background: var(--soft);
+
+            font-family:
+                Bahnschrift,
+                Arial,
+                sans-serif;
+        }
+
+        .preview {
+            position: relative;
+
+            width: 100%;
+            min-height: 280px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e8ede4;
+
+            overflow: hidden;
+
+            touch-action: pan-y;
+        }
+
+        canvas {
+            display: block;
+
+            max-width: 100%;
+            max-height: 62vh;
+
+            width: auto;
+            height: auto;
+        }
+
+        .empty {
+            padding: 50px 20px;
+
+            color: #788470;
+            text-align: center;
+
+            font-size: 14px;
+        }
+
+        .nav {
+            display: grid;
+            grid-template-columns: 50px 1fr 50px;
+
+            gap: 7px;
+
+            padding: 8px;
+        }
+
+        .nav button {
+            height: 38px;
+
+            border: 1px solid var(--border);
+            border-radius: 10px;
+
+            background: var(--soft);
+
+            color: var(--green-dark);
+
+            font-size: 19px;
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .nav button:disabled {
+            opacity: .35;
+        }
+
+        .filename {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+
+            white-space: nowrap;
+            text-overflow: ellipsis;
+
+            font-size: 12px;
+            color: #687360;
+        }
+
+        .controls {
+            padding: 10px;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 7px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 72px;
+
+            resize: vertical;
+
+            border: 1px solid var(--border);
+            border-radius: 10px;
+
+            padding: 9px 10px;
+
+            background: var(--soft);
+
+            color: var(--text);
+
+            font-family:
+                Bahnschrift,
+                Arial,
+                sans-serif;
+
+            font-size: 15px;
+
+            outline: none;
+        }
+
+        textarea:focus,
+        select:focus {
+            border-color: var(--green);
+        }
+
+        .settings {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+
+            gap: 6px;
+        }
+
+        .setting {
+            min-width: 0;
+
+            background: var(--soft);
+
+            border: 1px solid var(--border);
+            border-radius: 9px;
+
+            padding: 6px 7px;
+        }
+
+        .setting label {
+            display: block;
+
+            margin-bottom: 3px;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            color: #607055;
+
+            text-transform: uppercase;
+        }
+
+        select {
+            width: 100%;
+
+            border: 0;
+            background: transparent;
+
+            padding: 3px 0;
+
+            color: var(--text);
+
+            font-family:
+                Bahnschrift,
+                Arial,
+                sans-serif;
+
+            font-size: 13px;
+
+            outline: none;
+        }
+
+        .range-wrap {
+            display: grid;
+            grid-template-columns: 1fr 34px;
+
+            gap: 4px;
+            align-items: center;
+        }
+
+        input[type="range"] {
+            width: 100%;
+
+            accent-color: var(--green);
+        }
+
+        .value {
+            font-size: 11px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .color-row {
+            display: grid;
+            grid-template-columns: 1fr 38px;
+
+            gap: 6px;
+            align-items: center;
+        }
+
+        input[type="color"] {
+            width: 38px;
+            height: 29px;
+
+            padding: 1px;
+
+            border: 0;
+            border-radius: 6px;
+
+            background: none;
+
+            cursor: pointer;
+        }
+
+        .download {
+            width: 100%;
+
+            margin-top: 2px;
+            padding: 12px;
+
+            border: 0;
+            border-radius: 11px;
+
+            background: linear-gradient(
+                135deg,
+                var(--green-dark),
+                var(--green)
+            );
+
+            color: white;
+
+            font-family:
+                Bahnschrift,
+                Arial,
+                sans-serif;
+
+            font-size: 15px;
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .download:disabled {
+            opacity: .45;
+        }
+
+        .dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            gap: 5px;
+
+            padding-bottom: 8px;
+
+            overflow: hidden;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #c9d6be;
+        }
+
+        .dot.active {
+            background: var(--green);
+            transform: scale(1.3);
+        }
+
+        @media (min-width: 500px) {
+
+            .settings {
+                grid-template-columns:
+                    repeat(4, 1fr);
+            }
+
+        }
+    </style>
 </head>
+
+
 <body>
 
-<div class="fixed-bg"></div>
+<div class="app">
 
-<header class="site-header">
-  <div class="header-inner container">
-    <a class="brand" href="index.html">
-      <img src="img/smaragd.jpg" alt="Logó">
-      <div class="name-wrap">
-        <div class="name">Smaragd Kozmetika</div>
-        <span class="tag">Bemutatkozás</span>
-      </div>
-    </a>
-    <button class="hamburger" id="hamburgerBtn">
-      <div class="bars"><span></span><span></span><span></span></div>
-    </button>
-  </div>
-</header>
+    <div class="header">
 
-<main class="container">
-  <div class="home-grid-wrapper">
-    
-    <section class="card pad">
-      <div class="intro-grid">
-        <div class="intro-image">
-          <img src="img/smaragd.jpg" alt="Smaragd Kozmetika" style="border-radius: 50%; width: 120px; height: 120px; object-fit: cover; margin: 0 auto; border: 3px solid var(--emerald);">
+        <h1>
+            Képfeliratozó
+        </h1>
+
+        <div
+            class="counter"
+            id="counter"
+        >
+            0 / 0
         </div>
-        <div class="intro-content" style="text-align: center; margin-top: 15px;">
-          <h2 style="color: var(--emerald-dark); margin-bottom: 10px;">Toldi Nikolett</h2>
-          <p style="color: var(--muted); font-size: 0.9rem; line-height: 1.6;">
-            Hiszek abban, hogy a szépségápolás nem csak a külsőről, hanem a belső egyensúlyról is szól. Várlak szeretettel Kiskunfélegyháza szívében, ahol professzionális kezelésekkel segítek bőröd ragyogásában.
-          </p>
-        </div>
-      </div>
-    </section>
 
-    <section class="card pad">
-      <div class="intro-grid">
-        <div class="intro-image">
-          <img src="img/smaragd.jpg" alt="Smaragd Kozmetika" style="border-radius: 50%; width: 120px; height: 120px; object-fit: cover; margin: 0 auto; border: 3px solid var(--emerald);">
-        </div>
-        <div class="intro-content" style="text-align: center; margin-top: 15px;">
-          <h2 style="color: var(--emerald-dark); margin-bottom: 10px;">Ugró József</h2>
-          <p style="color: var(--muted); font-size: 0.9rem; line-height: 1.6;">
-            Frissítő és kényeztető masszázsaimat úgy alakítottam ki,
-             hogy segítsenek magad mögött hagyni a mindennapi stresszt. Legyen szó egy feszültségoldó testmasszázsról vagy egy speciális arcmasszázsról.
-          </p>
-        </div>
-      </div>
-    </section>
-
-  </div>
-
-  <div style="text-align: center; margin-top: 30px; margin-bottom: 40px;">
-    <a href="szolgaltatasok.html" class="btn-main" style="padding: 15px 40px; font-size: 1.1rem;">Szolgáltatások</a>
-  </div>
-</main>
-
-<nav class="nav-drawer">
-  <div class="backdrop" id="navBackdrop"></div>
-  <div class="panel">
-    <div class="nav-header">
-      <button class="nav-close" id="navClose">✕</button>
     </div>
-    <div class="nav-links">
-      <a href="index.html" class="active">Rólunk</a>
-      <a href="szolgaltatasok.html">Szolgáltatások</a>
-      <a href="referencia.html">Referencia</a>
-      <a href="arlista.html">Árlista</a>
-      <a href="idopont.html">Időpontfoglalás</a>
-      <a href="elerhetoseg.html">Elérhetőségek</a>
-    </div>
-  </div>
-</nav>
 
-<script src="js/script.js"></script>
+
+    <div class="panel">
+
+        <div class="upload">
+
+            <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                multiple
+            >
+
+        </div>
+
+
+        <div
+            class="preview"
+            id="preview"
+        >
+
+            <div
+                class="empty"
+                id="empty"
+            >
+                Kép feltöltése
+            </div>
+
+            <canvas
+                id="canvas"
+                hidden
+            ></canvas>
+
+        </div>
+
+
+        <div
+            class="nav"
+            id="nav"
+            hidden
+        >
+
+            <button
+                id="prevBtn"
+            >
+                ‹
+            </button>
+
+            <div
+                class="filename"
+                id="filename"
+            ></div>
+
+            <button
+                id="nextBtn"
+            >
+                ›
+            </button>
+
+        </div>
+
+
+        <div
+            class="dots"
+            id="dots"
+        ></div>
+
+
+        <div
+            class="controls"
+        >
+
+            <textarea
+                id="textInput"
+                placeholder="Szöveg..."
+                disabled
+            ></textarea>
+
+
+            <div class="settings">
+
+
+                <div class="setting">
+
+                    <label>
+                        Hely
+                    </label>
+
+                    <select
+                        id="positionSelect"
+                        disabled
+                    >
+                        <option value="top">
+                            Felül
+                        </option>
+
+                        <option
+                            value="bottom"
+                            selected
+                        >
+                            Alul
+                        </option>
+                    </select>
+
+                </div>
+
+
+                <div class="setting">
+
+                    <label>
+                        Szövegszín
+                    </label>
+
+                    <div class="color-row">
+
+                        <select
+                            id="colorPreset"
+                            disabled
+                        >
+                            <option
+                                value="#ffffff"
+                                selected
+                            >
+                                Fehér
+                            </option>
+
+                            <option value="#000000">
+                                Fekete
+                            </option>
+
+                            <option value="#ffff00">
+                                Sárga
+                            </option>
+
+                            <option value="#ff0000">
+                                Piros
+                            </option>
+
+                            <option value="custom">
+                                Egyedi
+                            </option>
+                        </select>
+
+                        <input
+                            type="color"
+                            id="textColor"
+                            value="#ffffff"
+                            disabled
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="setting">
+
+                    <label>
+                        Betű
+                    </label>
+
+                    <div class="range-wrap">
+
+                        <input
+                            type="range"
+                            id="fontSize"
+                            min="20"
+                            max="90"
+                            value="44"
+                            disabled
+                        >
+
+                        <span
+                            class="value"
+                            id="fontValue"
+                        >
+                            44
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="setting">
+
+                    <label>
+                        Háttér
+                    </label>
+
+                    <div class="range-wrap">
+
+                        <input
+                            type="range"
+                            id="opacity"
+                            min="20"
+                            max="90"
+                            value="55"
+                            disabled
+                        >
+
+                        <span
+                            class="value"
+                            id="opacityValue"
+                        >
+                            55
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <button
+                class="download"
+                id="downloadBtn"
+                disabled
+            >
+                Kép letöltése
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const imageInput =
+    document.getElementById("imageInput");
+
+const canvas =
+    document.getElementById("canvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+const preview =
+    document.getElementById("preview");
+
+const empty =
+    document.getElementById("empty");
+
+const nav =
+    document.getElementById("nav");
+
+const prevBtn =
+    document.getElementById("prevBtn");
+
+const nextBtn =
+    document.getElementById("nextBtn");
+
+const filename =
+    document.getElementById("filename");
+
+const counter =
+    document.getElementById("counter");
+
+const dots =
+    document.getElementById("dots");
+
+const textInput =
+    document.getElementById("textInput");
+
+const positionSelect =
+    document.getElementById("positionSelect");
+
+const fontSize =
+    document.getElementById("fontSize");
+
+const fontValue =
+    document.getElementById("fontValue");
+
+const opacity =
+    document.getElementById("opacity");
+
+const opacityValue =
+    document.getElementById("opacityValue");
+
+const textColor =
+    document.getElementById("textColor");
+
+const colorPreset =
+    document.getElementById("colorPreset");
+
+const downloadBtn =
+    document.getElementById("downloadBtn");
+
+
+let images = [];
+
+let currentIndex = 0;
+
+
+const logo =
+    new Image();
+
+let logoReady =
+    false;
+
+
+logo.onload = () => {
+
+    logoReady = true;
+
+    render();
+
+};
+
+
+logo.src =
+    "suveges.png";
+
+
+
+imageInput.addEventListener(
+    "change",
+    loadImages
+);
+
+
+textInput.addEventListener(
+    "input",
+    () => {
+
+        if (!images.length) return;
+
+        images[currentIndex].text =
+            textInput.value;
+
+        render();
+
+    }
+);
+
+
+positionSelect.addEventListener(
+    "change",
+    () => {
+
+        if (!images.length) return;
+
+        images[currentIndex].position =
+            positionSelect.value;
+
+        render();
+
+    }
+);
+
+
+fontSize.addEventListener(
+    "input",
+    () => {
+
+        fontValue.textContent =
+            fontSize.value;
+
+        if (!images.length) return;
+
+        images[currentIndex].fontSize =
+            Number(fontSize.value);
+
+        render();
+
+    }
+);
+
+
+opacity.addEventListener(
+    "input",
+    () => {
+
+        opacityValue.textContent =
+            opacity.value;
+
+        if (!images.length) return;
+
+        images[currentIndex].opacity =
+            Number(opacity.value) / 100;
+
+        render();
+
+    }
+);
+
+
+colorPreset.addEventListener(
+    "change",
+    () => {
+
+        if (!images.length) return;
+
+        if (
+            colorPreset.value !==
+            "custom"
+        ) {
+
+            textColor.value =
+                colorPreset.value;
+
+            images[currentIndex].color =
+                colorPreset.value;
+
+            render();
+
+        }
+
+    }
+);
+
+
+textColor.addEventListener(
+    "input",
+    () => {
+
+        if (!images.length) return;
+
+        colorPreset.value =
+            "custom";
+
+        images[currentIndex].color =
+            textColor.value;
+
+        render();
+
+    }
+);
+
+
+prevBtn.addEventListener(
+    "click",
+    () => {
+
+        previousImage();
+
+    }
+);
+
+
+nextBtn.addEventListener(
+    "click",
+    () => {
+
+        nextImage();
+
+    }
+);
+
+
+downloadBtn.addEventListener(
+    "click",
+    downloadImage
+);
+
+
+
+async function loadImages(event) {
+
+    const files =
+        Array.from(
+            event.target.files
+        );
+
+    if (!files.length) return;
+
+
+    images = [];
+
+    currentIndex = 0;
+
+
+    const loaded =
+        await Promise.all(
+            files.map(
+                file =>
+                    fileToImage(file)
+            )
+        );
+
+
+    images =
+        loaded;
+
+
+    enableControls();
+
+    loadSettings();
+
+    render();
+
+}
+
+
+function fileToImage(file) {
+
+    return new Promise(
+        resolve => {
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                e => {
+
+                    const img =
+                        new Image();
+
+
+                    img.onload =
+                        () => {
+
+                            resolve({
+
+                                image:
+                                    img,
+
+                                filename:
+                                    file.name,
+
+                                text:
+                                    "",
+
+                                position:
+                                    "bottom",
+
+                                fontSize:
+                                    44,
+
+                                opacity:
+                                    0.55,
+
+                                color:
+                                    "#ffffff"
+
+                            });
+
+                        };
+
+
+                    img.src =
+                        e.target.result;
+
+                };
+
+
+            reader.readAsDataURL(
+                file
+            );
+
+        }
+    );
+
+}
+
+
+function enableControls() {
+
+    empty.hidden = true;
+
+    canvas.hidden = false;
+
+    nav.hidden =
+        images.length <= 1;
+
+
+    textInput.disabled =
+        false;
+
+    positionSelect.disabled =
+        false;
+
+    fontSize.disabled =
+        false;
+
+    opacity.disabled =
+        false;
+
+    textColor.disabled =
+        false;
+
+    colorPreset.disabled =
+        false;
+
+    downloadBtn.disabled =
+        false;
+
+}
+
+
+function loadSettings() {
+
+    if (!images.length) return;
+
+
+    const item =
+        images[currentIndex];
+
+
+    textInput.value =
+        item.text;
+
+
+    positionSelect.value =
+        item.position;
+
+
+    fontSize.value =
+        item.fontSize;
+
+
+    fontValue.textContent =
+        item.fontSize;
+
+
+    opacity.value =
+        Math.round(
+            item.opacity * 100
+        );
+
+
+    opacityValue.textContent =
+        Math.round(
+            item.opacity * 100
+        );
+
+
+    textColor.value =
+        item.color;
+
+
+    const presets = [
+        "#ffffff",
+        "#000000",
+        "#ffff00",
+        "#ff0000"
+    ];
+
+
+    colorPreset.value =
+        presets.includes(
+            item.color
+        )
+            ? item.color
+            : "custom";
+
+
+    filename.textContent =
+        item.filename;
+
+
+    counter.textContent =
+        `${currentIndex + 1} / ${images.length}`;
+
+
+    prevBtn.disabled =
+        currentIndex === 0;
+
+
+    nextBtn.disabled =
+        currentIndex ===
+        images.length - 1;
+
+
+    updateDots();
+
+}
+
+
+function render() {
+
+    if (!images.length) return;
+
+
+    renderItem(
+        images[currentIndex],
+        canvas
+    );
+
+}
+
+
+function renderItem(
+    item,
+    targetCanvas
+) {
+
+    const c =
+        targetCanvas.getContext("2d");
+
+
+    const img =
+        item.image;
+
+
+    const width =
+        img.naturalWidth;
+
+
+    const height =
+        img.naturalHeight;
+
+
+    targetCanvas.width =
+        width;
+
+
+    targetCanvas.height =
+        height;
+
+
+    c.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    c.drawImage(
+        img,
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    const text =
+        item.text.trim();
+
+
+    if (!text) return;
+
+
+    const fontPx =
+        Math.max(
+            18,
+            item.fontSize *
+            width /
+            1200
+        );
+
+
+    const lineHeight =
+        fontPx * 1.18;
+
+
+    const paddingX =
+        width * 0.035;
+
+
+    const paddingY =
+        fontPx * 0.5;
+
+
+    c.font =
+        `700 ${fontPx}px Bahnschrift, Arial, sans-serif`;
+
+
+    c.textBaseline =
+        "middle";
+
+
+    let logoWidth = 0;
+
+    let logoHeight = 0;
+
+
+    const logoMargin =
+        width * 0.018;
+
+
+    if (
+        logoReady &&
+        logo.naturalWidth
+    ) {
+
+        const ratio =
+            logo.naturalWidth /
+            logo.naturalHeight;
+
+
+        logoHeight =
+            Math.max(
+                fontPx * 1.8,
+                width * 0.08
+            );
+
+
+        logoWidth =
+            logoHeight *
+            ratio;
+
+
+        const maxLogoWidth =
+            width * 0.24;
+
+
+        if (
+            logoWidth >
+            maxLogoWidth
+        ) {
+
+            logoWidth =
+                maxLogoWidth;
+
+            logoHeight =
+                logoWidth /
+                ratio;
+
+        }
+
+    }
+
+
+    const reservedLogo =
+        logoReady
+            ? logoWidth +
+              logoMargin * 2
+            : 0;
+
+
+    const maxTextWidth =
+        width -
+        paddingX * 2 -
+        reservedLogo;
+
+
+    const lines =
+        wrapText(
+            c,
+            text,
+            maxTextWidth
+        );
+
+
+    const textHeight =
+        lines.length *
+        lineHeight;
+
+
+    const bandHeight =
+        Math.max(
+            textHeight +
+            paddingY * 2,
+
+            logoHeight +
+            paddingY * 1.7
+        );
+
+
+    const bandY =
+        item.position ===
+        "top"
+            ? 0
+            : height -
+              bandHeight;
+
+
+    c.fillStyle =
+        `rgba(168,188,35,${item.opacity})`;
+
+
+    c.fillRect(
+        0,
+        bandY,
+        width,
+        bandHeight
+    );
+
+
+    if (
+        logoReady &&
+        logoWidth > 0
+    ) {
+
+        const logoX =
+            width -
+            logoWidth -
+            logoMargin;
+
+
+        const logoY =
+            bandY +
+            (
+                bandHeight -
+                logoHeight
+            ) / 2;
+
+
+        c.drawImage(
+            logo,
+            logoX,
+            logoY,
+            logoWidth,
+            logoHeight
+        );
+
+    }
+
+
+    c.fillStyle =
+        item.color;
+
+
+    c.textAlign =
+        "center";
+
+
+    const textAreaWidth =
+        width -
+        reservedLogo;
+
+
+    const centerX =
+        textAreaWidth / 2;
+
+
+    const startY =
+        bandY +
+        bandHeight / 2 -
+        (
+            lines.length - 1
+        ) *
+        lineHeight / 2;
+
+
+    lines.forEach(
+        (
+            line,
+            index
+        ) => {
+
+            c.fillText(
+                line,
+                centerX,
+                startY +
+                index *
+                lineHeight
+            );
+
+        }
+    );
+
+}
+
+
+function wrapText(
+    context,
+    text,
+    maxWidth
+) {
+
+    const result =
+        [];
+
+
+    const paragraphs =
+        text.split("\n");
+
+
+    paragraphs.forEach(
+        paragraph => {
+
+            const words =
+                paragraph
+                    .split(/\s+/)
+                    .filter(Boolean);
+
+
+            if (!words.length) {
+
+                result.push("");
+
+                return;
+
+            }
+
+
+            let line =
+                words[0];
+
+
+            for (
+                let i = 1;
+                i < words.length;
+                i++
+            ) {
+
+                const test =
+                    line +
+                    " " +
+                    words[i];
+
+
+                if (
+                    context
+                        .measureText(
+                            test
+                        )
+                        .width >
+                    maxWidth
+                ) {
+
+                    result.push(
+                        line
+                    );
+
+                    line =
+                        words[i];
+
+                } else {
+
+                    line =
+                        test;
+
+                }
+
+            }
+
+
+            result.push(
+                line
+            );
+
+        }
+    );
+
+
+    return result;
+
+}
+
+
+function previousImage() {
+
+    if (
+        currentIndex === 0
+    ) return;
+
+
+    currentIndex--;
+
+    loadSettings();
+
+    render();
+
+}
+
+
+function nextImage() {
+
+    if (
+        currentIndex >=
+        images.length - 1
+    ) return;
+
+
+    currentIndex++;
+
+    loadSettings();
+
+    render();
+
+}
+
+
+function updateDots() {
+
+    dots.innerHTML =
+        "";
+
+
+    images.forEach(
+        (
+            item,
+            index
+        ) => {
+
+            const dot =
+                document.createElement(
+                    "div"
+                );
+
+
+            dot.className =
+                "dot" +
+                (
+                    index ===
+                    currentIndex
+                        ? " active"
+                        : ""
+                );
+
+
+            dots.appendChild(
+                dot
+            );
+
+        }
+    );
+
+}
+
+
+function downloadImage() {
+
+    if (!images.length) return;
+
+
+    const item =
+        images[currentIndex];
+
+
+    const exportCanvas =
+        document.createElement(
+            "canvas"
+        );
+
+
+    renderItem(
+        item,
+        exportCanvas
+    );
+
+
+    exportCanvas.toBlob(
+        blob => {
+
+            const url =
+                URL.createObjectURL(
+                    blob
+                );
+
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+
+            const base =
+                item.filename.replace(
+                    /\.[^/.]+$/,
+                    ""
+                );
+
+
+            link.href =
+                url;
+
+
+            link.download =
+                base +
+                "_feliratozva.png";
+
+
+            document.body.appendChild(
+                link
+            );
+
+
+            link.click();
+
+
+            link.remove();
+
+
+            setTimeout(
+                () =>
+                    URL.revokeObjectURL(
+                        url
+                    ),
+                1000
+            );
+
+        },
+        "image/png"
+    );
+
+}
+
+
+
+let touchStartX = 0;
+
+let touchStartY = 0;
+
+
+preview.addEventListener(
+    "touchstart",
+    e => {
+
+        const touch =
+            e.changedTouches[0];
+
+
+        touchStartX =
+            touch.screenX;
+
+        touchStartY =
+            touch.screenY;
+
+    },
+    {
+        passive: true
+    }
+);
+
+
+preview.addEventListener(
+    "touchend",
+    e => {
+
+        const touch =
+            e.changedTouches[0];
+
+
+        const diffX =
+            touch.screenX -
+            touchStartX;
+
+
+        const diffY =
+            touch.screenY -
+            touchStartY;
+
+
+        if (
+            Math.abs(diffX) <
+            50
+        ) return;
+
+
+        if (
+            Math.abs(diffX) <
+            Math.abs(diffY)
+        ) return;
+
+
+        if (
+            diffX < 0
+        ) {
+
+            nextImage();
+
+        } else {
+
+            previousImage();
+
+        }
+
+    },
+    {
+        passive: true
+    }
+);
+
+</script>
 
 </body>
 </html>
