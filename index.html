@@ -8,7 +8,7 @@
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
     >
 
-    <title>Képfeliratozó</title>
+    <title>Süveges Autósiskola képkeretező</title>
 
     <style>
         :root {
@@ -17,13 +17,16 @@
             --green-light: #a8bc23;
 
             --black: #111111;
-            --black-soft: #1b1b1b;
-
             --white: #ffffff;
-            --off-white: #f6f7f2;
 
-            --border: #d7decf;
-            --muted: #70766a;
+            --border: #d9d9d9;
+            --muted: #707070;
+
+            --blue-block: #eaf6ff;
+            --blue-border: #c7e6fa;
+
+            --green-block: #eef8e7;
+            --green-border: #cfe5bd;
         }
 
         * {
@@ -38,19 +41,13 @@
 
             min-height: 100%;
 
+            background: #ffffff;
+
             font-family:
                 Bahnschrift,
                 "Segoe UI",
                 Arial,
                 sans-serif;
-
-            background:
-                linear-gradient(
-                    160deg,
-                    #ffffff 0%,
-                    #eff4e9 55%,
-                    #dbe6ce 100%
-                );
 
             color: var(--black);
         }
@@ -69,6 +66,8 @@
                 10px
                 10px
                 calc(20px + env(safe-area-inset-bottom));
+
+            background: #ffffff;
         }
 
         .header {
@@ -84,7 +83,7 @@
         .title {
             margin: 0;
 
-            font-size: 23px;
+            font-size: 21px;
             font-weight: 700;
 
             color: var(--black);
@@ -120,15 +119,15 @@
 
             box-shadow:
                 0
-                10px
-                28px
-                rgba(0, 0, 0, 0.10);
+                6px
+                20px
+                rgba(0, 0, 0, 0.08);
         }
-
-        /* FELTÖLTÉS */
 
         .upload-area {
             padding: 10px;
+
+            background: #ffffff;
         }
 
         #imageInput {
@@ -172,8 +171,6 @@
             transform: scale(.99);
         }
 
-        /* ELŐNÉZET */
-
         .preview {
             position: relative;
 
@@ -184,7 +181,7 @@
             align-items: center;
             justify-content: center;
 
-            background: #e6eadf;
+            background: #ffffff;
 
             overflow: hidden;
 
@@ -222,8 +219,6 @@
             font-size: 14px;
         }
 
-        /* LAPOZÁS */
-
         .navigation {
             display: grid;
 
@@ -237,6 +232,8 @@
             gap: 8px;
 
             padding: 9px;
+
+            background: #ffffff;
         }
 
         .nav-button {
@@ -267,7 +264,7 @@
         }
 
         .nav-button:disabled {
-            background: #bac7aa;
+            background: #bdc9b1;
             opacity: .55;
 
             box-shadow: none;
@@ -288,7 +285,7 @@
             font-size: 12px;
             font-weight: 600;
 
-            color: #586051;
+            color: #555555;
         }
 
         .dots {
@@ -301,6 +298,8 @@
                 0
                 10px
                 7px;
+
+            background: #ffffff;
         }
 
         .dot {
@@ -309,7 +308,7 @@
 
             border-radius: 50%;
 
-            background: #ccd5c3;
+            background: #d5d5d5;
         }
 
         .dot.active {
@@ -318,8 +317,6 @@
             transform: scale(1.35);
         }
 
-        /* BEÁLLÍTÁSOK */
-
         .controls {
             display: flex;
             flex-direction: column;
@@ -327,9 +324,11 @@
             gap: 8px;
 
             padding: 10px;
+
+            background: #ffffff;
         }
 
-        .text-block {
+        .image-block {
             display: flex;
             flex-direction: column;
 
@@ -340,11 +339,47 @@
             border:
                 1px
                 solid
-                var(--border);
+                #dddddd;
 
             border-radius: 10px;
 
-            background: var(--off-white);
+            background: #f8f8f8;
+        }
+
+        .congrats-block {
+            display: flex;
+            flex-direction: column;
+
+            gap: 6px;
+
+            padding: 8px;
+
+            border:
+                1px
+                solid
+                var(--blue-border);
+
+            border-radius: 10px;
+
+            background: var(--blue-block);
+        }
+
+        .name-block {
+            display: flex;
+            flex-direction: column;
+
+            gap: 6px;
+
+            padding: 8px;
+
+            border:
+                1px
+                solid
+                var(--green-border);
+
+            border-radius: 10px;
+
+            background: var(--green-block);
         }
 
         textarea {
@@ -359,7 +394,7 @@
             border:
                 1px
                 solid
-                var(--border);
+                rgba(0,0,0,.12);
 
             border-radius: 8px;
 
@@ -399,7 +434,7 @@
             border:
                 1px
                 solid
-                var(--border);
+                rgba(0,0,0,.10);
 
             border-radius: 7px;
 
@@ -411,7 +446,7 @@
 
             margin-bottom: 2px;
 
-            color: #626a59;
+            color: #5c5c5c;
 
             font-size: 9px;
             font-weight: 700;
@@ -486,8 +521,6 @@
             background: transparent;
         }
 
-        /* LETÖLTÉS */
-
         .download-button {
             width: 100%;
 
@@ -520,10 +553,17 @@
         }
 
         @media (min-width: 500px) {
+
             .settings {
                 grid-template-columns:
                     repeat(4, 1fr);
             }
+
+            .settings.image-settings {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
         }
     </style>
 </head>
@@ -536,7 +576,7 @@
     <div class="header">
 
         <h1 class="title">
-            Képfeliratozó
+            Süveges Autósiskola képkeretező
         </h1>
 
         <div
@@ -632,9 +672,228 @@
 
         <div class="controls">
 
+            <!-- KÉP SZERKESZTÉSE -->
+
+            <div class="image-block">
+
+                <div class="settings image-settings">
+
+                    <div class="setting">
+
+                        <label>
+                            Fényesség
+                        </label>
+
+                        <div class="range-wrap">
+
+                            <input
+                                type="range"
+                                id="brightness"
+                                min="50"
+                                max="150"
+                                value="100"
+                                disabled
+                            >
+
+                            <span
+                                class="range-value"
+                                id="brightnessValue"
+                            >
+                                100
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <label>
+                            Kontraszt
+                        </label>
+
+                        <div class="range-wrap">
+
+                            <input
+                                type="range"
+                                id="contrast"
+                                min="50"
+                                max="150"
+                                value="100"
+                                disabled
+                            >
+
+                            <span
+                                class="range-value"
+                                id="contrastValue"
+                            >
+                                100
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- GRATULÁLUNK -->
+
+            <div class="congrats-block">
+
+                <textarea
+                    id="congratsText"
+                    disabled
+                >Gratulálunk a sikeres vizsgához!</textarea>
+
+
+                <div class="settings">
+
+                    <div class="setting">
+
+                        <label>
+                            Hely
+                        </label>
+
+                        <select
+                            id="congratsPosition"
+                            disabled
+                        >
+
+                            <option
+                                value="top"
+                                selected
+                            >
+                                Felül
+                            </option>
+
+                            <option value="bottom">
+                                Alul
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <label>
+                            Szín
+                        </label>
+
+                        <div class="color-wrap">
+
+                            <select
+                                id="congratsColorPreset"
+                                disabled
+                            >
+
+                                <option value="#ffffff">
+                                    Fehér
+                                </option>
+
+                                <option
+                                    value="#000000"
+                                    selected
+                                >
+                                    Fekete
+                                </option>
+
+                                <option value="#ffff00">
+                                    Sárga
+                                </option>
+
+                                <option value="#ff0000">
+                                    Piros
+                                </option>
+
+                                <option value="custom">
+                                    Egyedi
+                                </option>
+
+                            </select>
+
+                            <input
+                                type="color"
+                                id="congratsColor"
+                                value="#000000"
+                                disabled
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <label>
+                            Betű
+                        </label>
+
+                        <div class="range-wrap">
+
+                            <input
+                                type="range"
+                                id="congratsFont"
+                                min="20"
+                                max="120"
+                                value="65"
+                                disabled
+                            >
+
+                            <span
+                                class="range-value"
+                                id="congratsFontValue"
+                            >
+                                65
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <label>
+                            Háttér
+                        </label>
+
+                        <div class="range-wrap">
+
+                            <input
+                                type="range"
+                                id="congratsOpacity"
+                                min="20"
+                                max="100"
+                                value="90"
+                                disabled
+                            >
+
+                            <span
+                                class="range-value"
+                                id="congratsOpacityValue"
+                            >
+                                90
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
             <!-- NÉV -->
 
-            <div class="text-block">
+            <div class="name-block">
 
                 <textarea
                     id="nameText"
@@ -784,157 +1043,6 @@
             </div>
 
 
-            <!-- GRATULÁLUNK -->
-
-            <div class="text-block">
-
-                <textarea
-                    id="congratsText"
-                    disabled
-                >Gratulálunk a sikeres vizsgához!</textarea>
-
-
-                <div class="settings">
-
-                    <div class="setting">
-
-                        <label>
-                            Hely
-                        </label>
-
-                        <select
-                            id="congratsPosition"
-                            disabled
-                        >
-
-                            <option
-                                value="top"
-                                selected
-                            >
-                                Felül
-                            </option>
-
-                            <option value="bottom">
-                                Alul
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="setting">
-
-                        <label>
-                            Szín
-                        </label>
-
-                        <div class="color-wrap">
-
-                            <select
-                                id="congratsColorPreset"
-                                disabled
-                            >
-
-                                <option value="#ffffff">
-                                    Fehér
-                                </option>
-
-                                <option
-                                    value="#000000"
-                                    selected
-                                >
-                                    Fekete
-                                </option>
-
-                                <option value="#ffff00">
-                                    Sárga
-                                </option>
-
-                                <option value="#ff0000">
-                                    Piros
-                                </option>
-
-                                <option value="custom">
-                                    Egyedi
-                                </option>
-
-                            </select>
-
-                            <input
-                                type="color"
-                                id="congratsColor"
-                                value="#000000"
-                                disabled
-                            >
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="setting">
-
-                        <label>
-                            Betű
-                        </label>
-
-                        <div class="range-wrap">
-
-                            <input
-                                type="range"
-                                id="congratsFont"
-                                min="20"
-                                max="120"
-                                value="65"
-                                disabled
-                            >
-
-                            <span
-                                class="range-value"
-                                id="congratsFontValue"
-                            >
-                                65
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="setting">
-
-                        <label>
-                            Háttér
-                        </label>
-
-                        <div class="range-wrap">
-
-                            <input
-                                type="range"
-                                id="congratsOpacity"
-                                min="20"
-                                max="100"
-                                value="90"
-                                disabled
-                            >
-
-                            <span
-                                class="range-value"
-                                id="congratsOpacityValue"
-                            >
-                                90
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
             <button
                 class="download-button"
                 id="downloadBtn"
@@ -987,6 +1095,18 @@ const canvas =
 
 const downloadBtn =
     document.getElementById("downloadBtn");
+
+const brightness =
+    document.getElementById("brightness");
+
+const brightnessValue =
+    document.getElementById("brightnessValue");
+
+const contrast =
+    document.getElementById("contrast");
+
+const contrastValue =
+    document.getElementById("contrastValue");
 
 
 const nameText =
@@ -1079,6 +1199,41 @@ imageInput.addEventListener(
     loadImages
 );
 
+
+brightness.addEventListener(
+    "input",
+    () => {
+
+        brightnessValue.textContent =
+            brightness.value;
+
+        if (!images.length) return;
+
+        images[currentIndex].brightness =
+            Number(brightness.value);
+
+        render();
+
+    }
+);
+
+
+contrast.addEventListener(
+    "input",
+    () => {
+
+        contrastValue.textContent =
+            contrast.value;
+
+        if (!images.length) return;
+
+        images[currentIndex].contrast =
+            Number(contrast.value);
+
+        render();
+
+    }
+);
 
 
 nameText.addEventListener(
@@ -1380,6 +1535,12 @@ function fileToImage(file) {
                                 filename:
                                     file.name,
 
+                                brightness:
+                                    100,
+
+                                contrast:
+                                    100,
+
                                 name: {
 
                                     text:
@@ -1454,6 +1615,13 @@ function enableControls() {
         images.length <= 1;
 
 
+    brightness.disabled =
+        false;
+
+    contrast.disabled =
+        false;
+
+
     nameText.disabled =
         false;
 
@@ -1506,6 +1674,22 @@ function loadSettings() {
 
     const item =
         images[currentIndex];
+
+
+    brightness.value =
+        item.brightness;
+
+
+    brightnessValue.textContent =
+        item.brightness;
+
+
+    contrast.value =
+        item.contrast;
+
+
+    contrastValue.textContent =
+        item.contrast;
 
 
     nameText.value =
@@ -1694,6 +1878,10 @@ function renderItem(
     );
 
 
+    ctx.filter =
+        `brightness(${item.brightness}%) contrast(${item.contrast}%)`;
+
+
     ctx.drawImage(
         image,
         0,
@@ -1701,6 +1889,10 @@ function renderItem(
         width,
         height
     );
+
+
+    ctx.filter =
+        "none";
 
 
     drawTextBlock(
