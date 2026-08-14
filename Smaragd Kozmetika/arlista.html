@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1"> <title>Smaragd Kozmetika • Árlista</title>
+  <link rel="icon" type="image/jpg" href="img/smaragd.jpg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="fixed-bg"></div>
+
+<header class="site-header">
+  <div class="header-inner container">
+    <a class="brand" href="index.html">
+      <img src="img/smaragd.jpg" alt="Logó">
+      <div class="name-wrap">
+        <div class="name">Smaragd Kozmetika</div>
+        <span class="tag">Árlista</span>
+      </div>
+    </a>
+    <button class="hamburger" id="hamburgerBtn">
+      <div class="bars"><span></span><span></span><span></span></div>
+    </button>
+  </div>
+</header>
+
+<main class="container price-container">
+  
+  <h1 style="text-align: center; color: var(--emerald-dark); margin: 20px 0 10px;">Árlista</h1>
+
+  <div class="price-controls sticky-controls">
+    <button class="price-tab active" onclick="changePrice('img/price1.jpg', this)">Arckezelés</button>
+    <button class="price-tab" onclick="changePrice('img/price2.jpg', this)">Gyanta & smink</button>
+    <button class="price-tab" onclick="changePrice('img/price3.jpg', this)">Masszázs</button>
+    <button class="price-tab" onclick="changePrice('img/price4.jpg', this)">Szempilla</button>
+  </div>
+
+  <div class="price-viewer-simple">
+    <img id="mainPriceImg" src="img/price1.jpg" alt="Árlista oldal" onclick="openZoom(this.src)">
+    <div class="zoom-icon-overlay">🔍 Nagyításhoz kattints</div>
+  </div>
+
+</main>
+
+<div id="zoomModal" class="zoom-modal" onclick="closeZoom()">
+  <span class="close-zoom">&times;</span>
+  <img class="zoom-modal-content" id="zoomImg">
+</div>
+
+<nav class="nav-drawer">
+  <div class="backdrop" id="navBackdrop"></div>
+  <div class="panel">
+    <div class="nav-header">
+      <button class="nav-close" id="navClose">✕</button>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Rólunk</a>
+      <a href="szolgaltatasok.html">Szolgáltatások</a>
+      <a href="referencia.html">Referencia</a>
+      <a href="arlista.html" class="active">Árlista</a>
+      <a href="idopont.html">Időpontfoglalás</a>
+      <a href="elerhetoseg.html">Elérhetőségek</a>
+    </div>
+  </div>
+</nav>
+
+<script src="js/script.js"></script>
+
+<script>
+  // Kép váltása
+  function changePrice(imageSrc, btnElement) {
+    const img = document.getElementById('mainPriceImg');
+    img.style.opacity = '0';
+    setTimeout(() => {
+      img.src = imageSrc;
+      img.style.opacity = '1';
+    }, 200);
+    document.querySelectorAll('.price-tab').forEach(btn => btn.classList.remove('active'));
+    btnElement.classList.add('active');
+  }
+
+  // Nagyító megnyitása
+  function openZoom(src) {
+    const modal = document.getElementById("zoomModal");
+    const modalImg = document.getElementById("zoomImg");
+    modal.style.display = "flex"; // Megjelenítés
+    modalImg.src = src;
+    document.body.style.overflow = "hidden"; // Háttér görgetés letiltása
+  }
+
+  // Nagyító bezárása
+  function closeZoom() {
+    const modal = document.getElementById("zoomModal");
+    modal.style.display = "none";
+    document.body.style.overflow = ""; // Görgetés visszakapcsolása
+  }
+</script>
+
+</body>
+</html>
