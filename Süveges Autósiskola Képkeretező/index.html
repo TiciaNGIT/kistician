@@ -1,0 +1,3392 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    >
+
+    <title>Süveges Autósiskola képkeretező</title>
+
+    <style>
+        :root {
+            --green: #8bb52a;
+            --green-dark: #6f941e;
+            --green-light: #a8c94c;
+
+            --bg: #24272b;
+            --panel: #2d3136;
+            --panel-light: #353a40;
+            --panel-hover: #3b4147;
+
+            --input: #292d31;
+
+            --white: #ffffff;
+            --text: #f3f4f5;
+            --muted: #aeb4ba;
+
+            --border: #454b51;
+
+            --blue-accent: #68b8e8;
+            --green-accent: #8bb52a;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+
+            background: var(--bg);
+
+            font-family:
+                Bahnschrift,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            color: var(--text);
+        }
+
+        body {
+            min-height: 100vh;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 680px;
+
+            margin: 0 auto;
+
+            padding:
+                12px
+                10px
+                calc(24px + env(safe-area-inset-bottom));
+        }
+
+        .header {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            width: 100%;
+
+            padding: 12px 8px 18px;
+        }
+
+        .title {
+            margin: 0;
+
+            width: 100%;
+
+            text-align: center;
+
+            font-size: 22px;
+            line-height: 1.2;
+            font-weight: 700;
+
+            color: var(--white);
+
+            letter-spacing: .01em;
+        }
+
+        .counter {
+            min-width: 66px;
+
+            padding: 7px 14px;
+
+            border-radius: 999px;
+
+            background: #383d42;
+
+            border: 1px solid #4b5157;
+
+            color: var(--white);
+
+            text-align: center;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            box-shadow:
+                0 4px 12px
+                rgba(0, 0, 0, .18);
+        }
+
+        .panel {
+            overflow: hidden;
+
+            background: var(--panel);
+
+            border:
+                1px
+                solid
+                var(--border);
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 16px 40px
+                rgba(0, 0, 0, .22);
+        }
+
+        .upload-area {
+            padding: 12px;
+
+            background: var(--panel);
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        .upload-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            width: 100%;
+            min-height: 50px;
+
+            border: 0;
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--green-dark),
+                    var(--green)
+                );
+
+            color: var(--white);
+
+            font-family:
+                Bahnschrift,
+                Arial,
+                sans-serif;
+
+            font-size: 15px;
+            font-weight: 700;
+
+            letter-spacing: .04em;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 7px 18px
+                rgba(115, 153, 30, .25);
+
+            transition:
+                transform .15s ease,
+                filter .15s ease;
+        }
+
+        .upload-button:active {
+            transform: scale(.985);
+            filter: brightness(.94);
+        }
+
+        .preview {
+            position: relative;
+
+            width: calc(100% - 24px);
+            min-height: 290px;
+
+            margin: 0 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #22262a;
+
+            border:
+                1px
+                solid
+                #40464c;
+
+            border-radius: 14px;
+
+            overflow: hidden;
+
+            touch-action: pan-y;
+        }
+
+        .preview-image {
+            display: block;
+
+            max-width: 100%;
+            max-height: 62vh;
+
+            width: auto;
+            height: auto;
+
+            object-fit: contain;
+
+            user-select: none;
+            -webkit-user-select: none;
+
+            -webkit-touch-callout: default;
+        }
+
+        #renderCanvas {
+            display: none;
+        }
+
+        .empty {
+            padding: 60px 20px;
+
+            color: var(--muted);
+
+            text-align: center;
+
+            font-size: 14px;
+        }
+
+        .image-counter-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 10px 10px 2px;
+
+            background: var(--panel);
+        }
+
+        .navigation {
+            display: grid;
+
+            grid-template-columns:
+                64px
+                1fr
+                64px;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 9px 12px;
+
+            background: var(--panel);
+        }
+
+        .nav-button {
+            height: 46px;
+
+            border:
+                1px
+                solid
+                #9ac83a;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--green-dark),
+                    var(--green)
+                );
+
+            color: var(--white);
+
+            font-size: 28px;
+            line-height: 1;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            box-shadow:
+                0
+                5px
+                14px
+                rgba(120, 160, 35, .20);
+
+            transition:
+                transform .15s ease,
+                filter .15s ease;
+        }
+
+        .nav-button:active {
+            transform: scale(.95);
+            filter: brightness(.9);
+        }
+
+        .nav-button:disabled {
+            background: #444a50;
+            border-color: #50565c;
+
+            color: #81878d;
+
+            opacity: .65;
+
+            box-shadow: none;
+        }
+
+        .filename {
+            min-width: 0;
+
+            padding: 0 6px;
+
+            overflow: hidden;
+
+            white-space: nowrap;
+            text-overflow: ellipsis;
+
+            text-align: center;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            color: var(--muted);
+        }
+
+        .dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            gap: 6px;
+
+            padding:
+                1px
+                10px
+                11px;
+
+            background: var(--panel);
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #555b61;
+
+            transition:
+                transform .15s ease,
+                background .15s ease;
+        }
+
+        .dot.active {
+            background: var(--green);
+
+            transform: scale(1.4);
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+
+            gap: 9px;
+
+            padding: 11px;
+
+            background: var(--panel);
+        }
+
+        .image-block,
+        .congrats-block,
+        .name-block {
+            display: flex;
+            flex-direction: column;
+
+            gap: 7px;
+
+            padding: 9px;
+
+            border-radius: 12px;
+
+            background: var(--panel-light);
+
+            box-shadow:
+                inset
+                0
+                0
+                0
+                1px
+                rgba(255, 255, 255, .025);
+        }
+
+        .image-block {
+            border:
+                1px
+                solid
+                var(--border);
+        }
+
+        .congrats-block {
+            border:
+                1px
+                solid
+                #467894;
+
+            border-left:
+                4px
+                solid
+                var(--blue-accent);
+        }
+
+        .name-block {
+            border:
+                1px
+                solid
+                #617637;
+
+            border-left:
+                4px
+                solid
+                var(--green-accent);
+        }
+
+        textarea {
+            width: 100%;
+
+            min-height: 55px;
+
+            padding: 10px 11px;
+
+            resize: vertical;
+
+            border:
+                1px
+                solid
+                var(--border);
+
+            border-radius: 9px;
+
+            outline: none;
+
+            background: var(--input);
+
+            color: var(--white);
+
+            font-family:
+                Bahnschrift,
+                Arial,
+                sans-serif;
+
+            font-size: 14px;
+
+            transition:
+                border .15s ease,
+                box-shadow .15s ease;
+        }
+
+        textarea::placeholder {
+            color: #848b91;
+        }
+
+        textarea:focus {
+            border-color: var(--green);
+
+            box-shadow:
+                0
+                0
+                0
+                3px
+                rgba(139, 181, 42, .12);
+        }
+
+        .settings {
+            display: grid;
+
+            grid-template-columns:
+                1fr
+                1fr;
+
+            gap: 6px;
+        }
+
+        .setting {
+            min-width: 0;
+
+            padding: 7px 8px;
+
+            border:
+                1px
+                solid
+                var(--border);
+
+            border-radius: 9px;
+
+            background: var(--input);
+        }
+
+        .setting label {
+            display: block;
+
+            margin-bottom: 4px;
+
+            color: var(--muted);
+
+            font-size: 9px;
+            line-height: 1.2;
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: .04em;
+        }
+
+        select {
+            width: 100%;
+
+            padding: 2px 0;
+
+            border: 0;
+
+            outline: none;
+
+            background: var(--input);
+
+            color: var(--white);
+
+            font-family:
+                Bahnschrift,
+                Arial,
+                sans-serif;
+
+            font-size: 12px;
+        }
+
+        select option {
+            background: var(--input);
+            color: var(--white);
+        }
+
+        .range-wrap {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                38px;
+
+            align-items: center;
+
+            gap: 5px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+
+            accent-color: var(--green);
+        }
+
+        .range-value {
+            padding: 3px 2px;
+
+            border-radius: 5px;
+
+            background: #3a3f44;
+
+            color: var(--white);
+
+            text-align: center;
+
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .color-wrap {
+            display: grid;
+
+            grid-template-columns:
+                1fr
+                34px;
+
+            gap: 5px;
+
+            align-items: center;
+        }
+
+        input[type="color"] {
+            width: 34px;
+            height: 28px;
+
+            padding: 2px;
+
+            border:
+                1px
+                solid
+                #555c62;
+
+            border-radius: 6px;
+
+            background: #383d42;
+
+            cursor: pointer;
+        }
+
+        .download-button {
+            width: 100%;
+
+            min-height: 50px;
+
+            margin-top: 2px;
+
+            border:
+                1px
+                solid
+                #555c62;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3c4248,
+                    #30353a
+                );
+
+            color: var(--white);
+
+            font-family:
+                Bahnschrift,
+                Arial,
+                sans-serif;
+
+            font-size: 15px;
+            font-weight: 700;
+
+            letter-spacing: .03em;
+
+            cursor: pointer;
+
+            box-shadow:
+                0
+                6px
+                18px
+                rgba(0, 0, 0, .18);
+
+            transition:
+                background .15s ease,
+                transform .15s ease;
+        }
+
+        .download-button:active {
+            transform: scale(.985);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--green-dark),
+                    var(--green)
+                );
+        }
+
+        .download-button:disabled {
+            opacity: .35;
+        }
+
+        @media (min-width: 500px) {
+
+            .settings {
+                grid-template-columns:
+                    repeat(4, 1fr);
+            }
+
+            .settings.image-settings {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 380px) {
+
+            .title {
+                font-size: 19px;
+            }
+
+            .navigation {
+                grid-template-columns:
+                    56px
+                    1fr
+                    56px;
+            }
+
+            .settings {
+                gap: 5px;
+            }
+
+            .setting {
+                padding: 6px;
+            }
+
+        }
+    </style>
+</head>
+
+
+<body>
+
+<div class="app">
+
+    <div class="header">
+
+        <h1 class="title">
+            Süveges Autósiskola képkeretező
+        </h1>
+
+    </div>
+
+
+    <div class="panel">
+
+        <div class="upload-area">
+
+            <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                multiple
+            >
+
+            <label
+                for="imageInput"
+                class="upload-button"
+            >
+                KÉPEK FELTÖLTÉSE
+            </label>
+
+        </div>
+
+
+        <div
+            class="preview"
+            id="preview"
+        >
+
+            <div
+                class="empty"
+                id="empty"
+            >
+                Kép feltöltése
+            </div>
+
+            <img
+                id="previewImage"
+                class="preview-image"
+                alt=""
+                hidden
+            >
+
+            <canvas
+                id="renderCanvas"
+            ></canvas>
+
+        </div>
+
+
+        <div class="image-counter-row">
+
+            <div
+                class="counter"
+                id="counter"
+            >
+                0 / 0
+            </div>
+
+        </div>
+
+
+        <div
+            class="navigation"
+            id="navigation"
+            hidden
+        >
+
+            <button
+                class="nav-button"
+                id="prevBtn"
+            >
+                ‹
+            </button>
+
+            <div
+                class="filename"
+                id="filename"
+            ></div>
+
+            <button
+                class="nav-button"
+                id="nextBtn"
+            >
+                ›
+            </button>
+
+        </div>
+
+
+        <div
+            class="dots"
+            id="dots"
+        ></div>
+
+
+        <div class="controls">
+
+            <div class="image-block">
+
+                <div class="settings image-settings">
+
+                    <div class="setting">
+
+                        <label>
+                            Fényesség
+                        </label>
+
+                        <div class="range-wrap">
+
+                            <input
+                                type="range"
+                                id="brightness"
+                                min="50"
+                                max="150"
+                                value="100"
+                                disabled
+                            >
+
+                            <span
+                                class="range-value"
+                                id="brightnessValue"
+                            >
+                                100
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <label>
+                            Kontraszt
+                        </label>
+
+                        <div class="range-wrap">
+
+                            <input
+                                type="range"
+                                id="contrast"
+                                min="50"
+                                max="150"
+                                value="100"
+                                disabled
+                            >
+
+                            <span
+                                class="range-value"
+                                id="contrastValue"
+                            >
+                                100
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="congrats-block">
+
+                <textarea
+                    id="congratsText"
+                    disabled
+                >Gratulálunk a sikeres vizsgához!</textarea>
+
+
+                <div class="settings">
+
+                    <div class="setting">
+
+                        <label>
+                            Elhelyezés
+                        </label>
+
+                        <select
+                            id="congratsPosition"
+                            disabled
+                        >
+
+                            <option
+                                value="top"
+                                selected
+                            >
+                                Felül
+                            </option>
+
+                            <option value="bottom">
+                                Alul
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <label>
+                            Szín
+                        </label>
+
+                        <div class="color-wrap">
+
+                            <select
+                                id="congratsColorPreset"
+                                disabled
+                            >
+
+                                <option value="#ffffff">
+                                    Fehér
+                                </option>
+
+                                <option
+                                    value="#000000"
+                                    selected
+                                >
+                                    Fekete
+                                </option>
+
+                                <option value="#ffff00">
+                                    Sárga
+                                </option>
+
+                                <option value="#ff0000">
+                                    Piros
+                                </option>
+
+                                <option value="custom">
+                                    Egyedi
+                                </option>
+
+                            </select>
+
+                            <input
+                                type="color"
+                                id="congratsColor"
+                                value="#000000"
+                                disabled
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <label>
+                            Betűméret
+                        </label>
+
+                        <div class="range-wrap">
+
+                            <input
+                                type="range"
+                                id="congratsFont"
+                                min="20"
+                                max="120"
+                                value="65"
+                                disabled
+                            >
+
+                            <span
+                                class="range-value"
+                                id="congratsFontValue"
+                            >
+                                65
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <label>
+                            Háttér átlátszósága
+                        </label>
+
+                        <div class="range-wrap">
+
+                            <input
+                                type="range"
+                                id="congratsOpacity"
+                                min="20"
+                                max="100"
+                                value="90"
+                                disabled
+                            >
+
+                            <span
+                                class="range-value"
+                                id="congratsOpacityValue"
+                            >
+                                90
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="name-block">
+
+                <textarea
+                    id="nameText"
+                    placeholder="Név..."
+                    disabled
+                ></textarea>
+
+
+                <div class="settings">
+
+                    <div class="setting">
+
+                        <label>
+                            Elhelyezés
+                        </label>
+
+                        <select
+                            id="namePosition"
+                            disabled
+                        >
+
+                            <option value="top">
+                                Felül
+                            </option>
+
+                            <option
+                                value="bottom"
+                                selected
+                            >
+                                Alul
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <label>
+                            Szín
+                        </label>
+
+                        <div class="color-wrap">
+
+                            <select
+                                id="nameColorPreset"
+                                disabled
+                            >
+
+                                <option value="#ffffff">
+                                    Fehér
+                                </option>
+
+                                <option
+                                    value="#000000"
+                                    selected
+                                >
+                                    Fekete
+                                </option>
+
+                                <option value="#ffff00">
+                                    Sárga
+                                </option>
+
+                                <option value="#ff0000">
+                                    Piros
+                                </option>
+
+                                <option value="custom">
+                                    Egyedi
+                                </option>
+
+                            </select>
+
+                            <input
+                                type="color"
+                                id="nameColor"
+                                value="#000000"
+                                disabled
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <label>
+                            Betűméret
+                        </label>
+
+                        <div class="range-wrap">
+
+                            <input
+                                type="range"
+                                id="nameFont"
+                                min="20"
+                                max="120"
+                                value="80"
+                                disabled
+                            >
+
+                            <span
+                                class="range-value"
+                                id="nameFontValue"
+                            >
+                                80
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <label>
+                            Háttér átlátszósága
+                        </label>
+
+                        <div class="range-wrap">
+
+                            <input
+                                type="range"
+                                id="nameOpacity"
+                                min="20"
+                                max="100"
+                                value="70"
+                                disabled
+                            >
+
+                            <span
+                                class="range-value"
+                                id="nameOpacityValue"
+                            >
+                                70
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="download-button"
+                id="downloadBtn"
+                disabled
+            >
+                KÉP LETÖLTÉSE
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const PREVIEW_MAX_SIZE = 1200;
+
+
+const imageInput =
+    document.getElementById("imageInput");
+
+const preview =
+    document.getElementById("preview");
+
+const previewImage =
+    document.getElementById("previewImage");
+
+const empty =
+    document.getElementById("empty");
+
+const navigation =
+    document.getElementById("navigation");
+
+const prevBtn =
+    document.getElementById("prevBtn");
+
+const nextBtn =
+    document.getElementById("nextBtn");
+
+const filename =
+    document.getElementById("filename");
+
+const counter =
+    document.getElementById("counter");
+
+const dots =
+    document.getElementById("dots");
+
+const canvas =
+    document.getElementById("renderCanvas");
+
+const downloadBtn =
+    document.getElementById("downloadBtn");
+
+const brightness =
+    document.getElementById("brightness");
+
+const brightnessValue =
+    document.getElementById("brightnessValue");
+
+const contrast =
+    document.getElementById("contrast");
+
+const contrastValue =
+    document.getElementById("contrastValue");
+
+
+const nameText =
+    document.getElementById("nameText");
+
+const namePosition =
+    document.getElementById("namePosition");
+
+const nameColorPreset =
+    document.getElementById("nameColorPreset");
+
+const nameColor =
+    document.getElementById("nameColor");
+
+const nameFont =
+    document.getElementById("nameFont");
+
+const nameFontValue =
+    document.getElementById("nameFontValue");
+
+const nameOpacity =
+    document.getElementById("nameOpacity");
+
+const nameOpacityValue =
+    document.getElementById("nameOpacityValue");
+
+
+const congratsText =
+    document.getElementById("congratsText");
+
+const congratsPosition =
+    document.getElementById("congratsPosition");
+
+const congratsColorPreset =
+    document.getElementById("congratsColorPreset");
+
+const congratsColor =
+    document.getElementById("congratsColor");
+
+const congratsFont =
+    document.getElementById("congratsFont");
+
+const congratsFontValue =
+    document.getElementById("congratsFontValue");
+
+const congratsOpacity =
+    document.getElementById("congratsOpacity");
+
+const congratsOpacityValue =
+    document.getElementById("congratsOpacityValue");
+
+
+let images = [];
+
+let currentIndex = 0;
+
+let renderScheduled = false;
+
+let previewRenderVersion = 0;
+
+let currentPreviewUrl = null;
+
+
+const logo =
+    new Image();
+
+let logoReady =
+    false;
+
+
+logo.onload = () => {
+
+    logoReady = true;
+
+    scheduleRender();
+
+};
+
+
+logo.onerror = () => {
+
+    logoReady = false;
+
+    scheduleRender();
+
+};
+
+
+logo.src =
+    "suveges.png";
+
+
+
+imageInput.addEventListener(
+    "change",
+    loadImages
+);
+
+
+
+brightness.addEventListener(
+    "input",
+    () => {
+
+        brightnessValue.textContent =
+            brightness.value;
+
+        if (!images.length) return;
+
+        const item =
+            images[currentIndex];
+
+        item.brightness =
+            Number(brightness.value);
+
+        invalidateAdjustedPreview(
+            item
+        );
+
+        scheduleRender();
+
+    }
+);
+
+
+
+contrast.addEventListener(
+    "input",
+    () => {
+
+        contrastValue.textContent =
+            contrast.value;
+
+        if (!images.length) return;
+
+        const item =
+            images[currentIndex];
+
+        item.contrast =
+            Number(contrast.value);
+
+        invalidateAdjustedPreview(
+            item
+        );
+
+        scheduleRender();
+
+    }
+);
+
+
+
+nameText.addEventListener(
+    "input",
+    () => {
+
+        if (!images.length) return;
+
+        images[currentIndex].name.text =
+            nameText.value;
+
+        scheduleRender();
+
+    }
+);
+
+
+
+namePosition.addEventListener(
+    "change",
+    () => {
+
+        if (!images.length) return;
+
+        images[currentIndex].name.position =
+            namePosition.value;
+
+        scheduleRender();
+
+    }
+);
+
+
+
+nameFont.addEventListener(
+    "input",
+    () => {
+
+        nameFontValue.textContent =
+            nameFont.value;
+
+        if (!images.length) return;
+
+        images[currentIndex].name.fontSize =
+            Number(nameFont.value);
+
+        scheduleRender();
+
+    }
+);
+
+
+
+nameOpacity.addEventListener(
+    "input",
+    () => {
+
+        nameOpacityValue.textContent =
+            nameOpacity.value;
+
+        if (!images.length) return;
+
+        images[currentIndex].name.opacity =
+            Number(nameOpacity.value) / 100;
+
+        scheduleRender();
+
+    }
+);
+
+
+
+nameColorPreset.addEventListener(
+    "change",
+    () => {
+
+        if (!images.length) return;
+
+        if (
+            nameColorPreset.value !==
+            "custom"
+        ) {
+
+            nameColor.value =
+                nameColorPreset.value;
+
+            images[currentIndex].name.color =
+                nameColorPreset.value;
+
+            scheduleRender();
+
+        }
+
+    }
+);
+
+
+
+nameColor.addEventListener(
+    "input",
+    () => {
+
+        if (!images.length) return;
+
+        nameColorPreset.value =
+            "custom";
+
+        images[currentIndex].name.color =
+            nameColor.value;
+
+        scheduleRender();
+
+    }
+);
+
+
+
+congratsText.addEventListener(
+    "input",
+    () => {
+
+        if (!images.length) return;
+
+        images[currentIndex].congrats.text =
+            congratsText.value;
+
+        scheduleRender();
+
+    }
+);
+
+
+
+congratsPosition.addEventListener(
+    "change",
+    () => {
+
+        if (!images.length) return;
+
+        images[currentIndex].congrats.position =
+            congratsPosition.value;
+
+        scheduleRender();
+
+    }
+);
+
+
+
+congratsFont.addEventListener(
+    "input",
+    () => {
+
+        congratsFontValue.textContent =
+            congratsFont.value;
+
+        if (!images.length) return;
+
+        images[currentIndex].congrats.fontSize =
+            Number(congratsFont.value);
+
+        scheduleRender();
+
+    }
+);
+
+
+
+congratsOpacity.addEventListener(
+    "input",
+    () => {
+
+        congratsOpacityValue.textContent =
+            congratsOpacity.value;
+
+        if (!images.length) return;
+
+        images[currentIndex].congrats.opacity =
+            Number(congratsOpacity.value) / 100;
+
+        scheduleRender();
+
+    }
+);
+
+
+
+congratsColorPreset.addEventListener(
+    "change",
+    () => {
+
+        if (!images.length) return;
+
+        if (
+            congratsColorPreset.value !==
+            "custom"
+        ) {
+
+            congratsColor.value =
+                congratsColorPreset.value;
+
+            images[currentIndex].congrats.color =
+                congratsColorPreset.value;
+
+            scheduleRender();
+
+        }
+
+    }
+);
+
+
+
+congratsColor.addEventListener(
+    "input",
+    () => {
+
+        if (!images.length) return;
+
+        congratsColorPreset.value =
+            "custom";
+
+        images[currentIndex].congrats.color =
+            congratsColor.value;
+
+        scheduleRender();
+
+    }
+);
+
+
+
+prevBtn.addEventListener(
+    "click",
+    previousImage
+);
+
+
+nextBtn.addEventListener(
+    "click",
+    nextImage
+);
+
+
+downloadBtn.addEventListener(
+    "click",
+    downloadCurrentImage
+);
+
+
+
+async function loadImages(event) {
+
+    const files =
+        Array.from(
+            event.target.files
+        );
+
+
+    if (!files.length) return;
+
+
+    downloadBtn.disabled =
+        true;
+
+
+    images =
+        await Promise.all(
+            files.map(
+                file =>
+                    fileToImage(file)
+            )
+        );
+
+
+    currentIndex = 0;
+
+
+    enableControls();
+
+    loadSettings();
+
+    scheduleRender();
+
+}
+
+
+
+function fileToImage(file) {
+
+    return new Promise(
+        resolve => {
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                event => {
+
+                    const image =
+                        new Image();
+
+
+                    image.onload =
+                        () => {
+
+                            const previewSource =
+                                createPreviewSource(
+                                    image
+                                );
+
+
+                            resolve({
+
+                                image:
+                                    image,
+
+                                previewSource:
+                                    previewSource,
+
+                                adjustedPreview:
+                                    null,
+
+                                adjustedKey:
+                                    "",
+
+                                filename:
+                                    file.name,
+
+                                brightness:
+                                    100,
+
+                                contrast:
+                                    100,
+
+                                name: {
+
+                                    text:
+                                        "",
+
+                                    position:
+                                        "bottom",
+
+                                    fontSize:
+                                        80,
+
+                                    opacity:
+                                        0.70,
+
+                                    color:
+                                        "#000000"
+
+                                },
+
+                                congrats: {
+
+                                    text:
+                                        "Gratulálunk a sikeres vizsgához!",
+
+                                    position:
+                                        "top",
+
+                                    fontSize:
+                                        65,
+
+                                    opacity:
+                                        0.90,
+
+                                    color:
+                                        "#000000"
+
+                                }
+
+                            });
+
+                        };
+
+
+                    image.src =
+                        event.target.result;
+
+                };
+
+
+            reader.readAsDataURL(
+                file
+            );
+
+        }
+    );
+
+}
+
+
+
+function createPreviewSource(
+    image
+) {
+
+    const originalWidth =
+        image.naturalWidth;
+
+
+    const originalHeight =
+        image.naturalHeight;
+
+
+    const maxDimension =
+        Math.max(
+            originalWidth,
+            originalHeight
+        );
+
+
+    const scale =
+        Math.min(
+            1,
+            PREVIEW_MAX_SIZE /
+            maxDimension
+        );
+
+
+    const width =
+        Math.round(
+            originalWidth *
+            scale
+        );
+
+
+    const height =
+        Math.round(
+            originalHeight *
+            scale
+        );
+
+
+    const sourceCanvas =
+        document.createElement(
+            "canvas"
+        );
+
+
+    sourceCanvas.width =
+        width;
+
+
+    sourceCanvas.height =
+        height;
+
+
+    const ctx =
+        sourceCanvas.getContext(
+            "2d",
+            {
+                alpha: false
+            }
+        );
+
+
+    ctx.drawImage(
+        image,
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    return sourceCanvas;
+
+}
+
+
+
+function invalidateAdjustedPreview(
+    item
+) {
+
+    item.adjustedKey =
+        "";
+
+}
+
+
+
+function getAdjustedPreview(
+    item
+) {
+
+    const key =
+        item.brightness +
+        "_" +
+        item.contrast;
+
+
+    if (
+        item.adjustedPreview &&
+        item.adjustedKey === key
+    ) {
+
+        return item.adjustedPreview;
+
+    }
+
+
+    const source =
+        item.previewSource;
+
+
+    const adjusted =
+        document.createElement(
+            "canvas"
+        );
+
+
+    adjusted.width =
+        source.width;
+
+
+    adjusted.height =
+        source.height;
+
+
+    const ctx =
+        adjusted.getContext(
+            "2d",
+            {
+                willReadFrequently: true,
+                alpha: false
+            }
+        );
+
+
+    ctx.drawImage(
+        source,
+        0,
+        0
+    );
+
+
+    applyBrightnessContrast(
+        ctx,
+        adjusted.width,
+        adjusted.height,
+        item.brightness,
+        item.contrast
+    );
+
+
+    item.adjustedPreview =
+        adjusted;
+
+
+    item.adjustedKey =
+        key;
+
+
+    return adjusted;
+
+}
+
+
+
+function applyBrightnessContrast(
+    ctx,
+    width,
+    height,
+    brightnessValue,
+    contrastValue
+) {
+
+    if (
+        brightnessValue === 100 &&
+        contrastValue === 100
+    ) {
+
+        return;
+
+    }
+
+
+    const imageData =
+        ctx.getImageData(
+            0,
+            0,
+            width,
+            height
+        );
+
+
+    const data =
+        imageData.data;
+
+
+    const brightnessMultiplier =
+        brightnessValue /
+        100;
+
+
+    const contrast =
+        contrastValue -
+        100;
+
+
+    const contrastFactor =
+        (
+            259 *
+            (
+                contrast +
+                255
+            )
+        ) /
+        (
+            255 *
+            (
+                259 -
+                contrast
+            )
+        );
+
+
+    for (
+        let i = 0;
+        i < data.length;
+        i += 4
+    ) {
+
+        let r =
+            data[i] *
+            brightnessMultiplier;
+
+
+        let g =
+            data[i + 1] *
+            brightnessMultiplier;
+
+
+        let b =
+            data[i + 2] *
+            brightnessMultiplier;
+
+
+        r =
+            contrastFactor *
+            (
+                r -
+                128
+            ) +
+            128;
+
+
+        g =
+            contrastFactor *
+            (
+                g -
+                128
+            ) +
+            128;
+
+
+        b =
+            contrastFactor *
+            (
+                b -
+                128
+            ) +
+            128;
+
+
+        data[i] =
+            clampColor(r);
+
+
+        data[i + 1] =
+            clampColor(g);
+
+
+        data[i + 2] =
+            clampColor(b);
+
+    }
+
+
+    ctx.putImageData(
+        imageData,
+        0,
+        0
+    );
+
+}
+
+
+
+function clampColor(
+    value
+) {
+
+    return Math.max(
+        0,
+        Math.min(
+            255,
+            value
+        )
+    );
+
+}
+
+
+
+function enableControls() {
+
+    empty.hidden =
+        true;
+
+
+    previewImage.hidden =
+        false;
+
+
+    navigation.hidden =
+        images.length <= 1;
+
+
+    brightness.disabled =
+        false;
+
+    contrast.disabled =
+        false;
+
+
+    nameText.disabled =
+        false;
+
+    namePosition.disabled =
+        false;
+
+    nameColorPreset.disabled =
+        false;
+
+    nameColor.disabled =
+        false;
+
+    nameFont.disabled =
+        false;
+
+    nameOpacity.disabled =
+        false;
+
+
+    congratsText.disabled =
+        false;
+
+    congratsPosition.disabled =
+        false;
+
+    congratsColorPreset.disabled =
+        false;
+
+    congratsColor.disabled =
+        false;
+
+    congratsFont.disabled =
+        false;
+
+    congratsOpacity.disabled =
+        false;
+
+
+    downloadBtn.disabled =
+        false;
+
+}
+
+
+
+function loadSettings() {
+
+    if (!images.length) return;
+
+
+    const item =
+        images[currentIndex];
+
+
+    brightness.value =
+        item.brightness;
+
+
+    brightnessValue.textContent =
+        item.brightness;
+
+
+    contrast.value =
+        item.contrast;
+
+
+    contrastValue.textContent =
+        item.contrast;
+
+
+    nameText.value =
+        item.name.text;
+
+
+    namePosition.value =
+        item.name.position;
+
+
+    nameFont.value =
+        item.name.fontSize;
+
+
+    nameFontValue.textContent =
+        item.name.fontSize;
+
+
+    nameOpacity.value =
+        Math.round(
+            item.name.opacity * 100
+        );
+
+
+    nameOpacityValue.textContent =
+        Math.round(
+            item.name.opacity * 100
+        );
+
+
+    nameColor.value =
+        item.name.color;
+
+
+    setColorPreset(
+        nameColorPreset,
+        item.name.color
+    );
+
+
+    congratsText.value =
+        item.congrats.text;
+
+
+    congratsPosition.value =
+        item.congrats.position;
+
+
+    congratsFont.value =
+        item.congrats.fontSize;
+
+
+    congratsFontValue.textContent =
+        item.congrats.fontSize;
+
+
+    congratsOpacity.value =
+        Math.round(
+            item.congrats.opacity * 100
+        );
+
+
+    congratsOpacityValue.textContent =
+        Math.round(
+            item.congrats.opacity * 100
+        );
+
+
+    congratsColor.value =
+        item.congrats.color;
+
+
+    setColorPreset(
+        congratsColorPreset,
+        item.congrats.color
+    );
+
+
+    filename.textContent =
+        item.filename;
+
+
+    counter.textContent =
+        `${currentIndex + 1} / ${images.length}`;
+
+
+    prevBtn.disabled =
+        currentIndex === 0;
+
+
+    nextBtn.disabled =
+        currentIndex ===
+        images.length - 1;
+
+
+    updateDots();
+
+}
+
+
+
+function setColorPreset(
+    select,
+    color
+) {
+
+    const colors = [
+
+        "#ffffff",
+        "#000000",
+        "#ffff00",
+        "#ff0000"
+
+    ];
+
+
+    select.value =
+        colors.includes(color)
+            ? color
+            : "custom";
+
+}
+
+
+
+function scheduleRender() {
+
+    if (renderScheduled) {
+        return;
+    }
+
+
+    renderScheduled =
+        true;
+
+
+    requestAnimationFrame(
+        () => {
+
+            renderScheduled =
+                false;
+
+            render();
+
+        }
+    );
+
+}
+
+
+
+function render() {
+
+    if (!images.length) return;
+
+
+    const item =
+        images[currentIndex];
+
+
+    const adjustedPreview =
+        getAdjustedPreview(
+            item
+        );
+
+
+    canvas.width =
+        adjustedPreview.width;
+
+
+    canvas.height =
+        adjustedPreview.height;
+
+
+    const ctx =
+        canvas.getContext(
+            "2d",
+            {
+                alpha: false
+            }
+        );
+
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    ctx.drawImage(
+        adjustedPreview,
+        0,
+        0
+    );
+
+
+    drawTextBlock(
+        ctx,
+        canvas.width,
+        canvas.height,
+        item.congrats,
+        false
+    );
+
+
+    drawTextBlock(
+        ctx,
+        canvas.width,
+        canvas.height,
+        item.name,
+        true
+    );
+
+
+    updatePreviewImage();
+
+}
+
+
+
+function updatePreviewImage() {
+
+    const version =
+        ++previewRenderVersion;
+
+
+    canvas.toBlob(
+        blob => {
+
+            if (!blob) {
+                return;
+            }
+
+
+            if (
+                version !==
+                previewRenderVersion
+            ) {
+
+                return;
+
+            }
+
+
+            const url =
+                URL.createObjectURL(
+                    blob
+                );
+
+
+            if (
+                currentPreviewUrl
+            ) {
+
+                URL.revokeObjectURL(
+                    currentPreviewUrl
+                );
+
+            }
+
+
+            currentPreviewUrl =
+                url;
+
+
+            previewImage.src =
+                url;
+
+        },
+        "image/jpeg",
+        0.92
+    );
+
+}
+
+
+
+function drawTextBlock(
+    ctx,
+    width,
+    height,
+    settings,
+    showLogo
+) {
+
+    const text =
+        settings.text.trim();
+
+
+    if (!text) return;
+
+
+    const fontSize =
+        Math.max(
+            16,
+            settings.fontSize *
+            width /
+            1200
+        );
+
+
+    const lineHeight =
+        fontSize *
+        1.15;
+
+
+    const paddingX =
+        width *
+        0.035;
+
+
+    const paddingY =
+        fontSize *
+        0.48;
+
+
+    ctx.font =
+        `700 ${fontSize}px Bahnschrift, Arial, sans-serif`;
+
+
+    ctx.textBaseline =
+        "middle";
+
+
+    let logoWidth =
+        0;
+
+
+    let logoHeight =
+        0;
+
+
+    const logoMargin =
+        width *
+        0.018;
+
+
+    if (
+        showLogo &&
+        logoReady &&
+        logo.naturalWidth &&
+        logo.naturalHeight
+    ) {
+
+        const ratio =
+            logo.naturalWidth /
+            logo.naturalHeight;
+
+
+        logoHeight =
+            Math.max(
+                fontSize * 1.6,
+                width * 0.085
+            );
+
+
+        logoWidth =
+            logoHeight *
+            ratio;
+
+
+        const maxLogoWidth =
+            width *
+            0.27;
+
+
+        if (
+            logoWidth >
+            maxLogoWidth
+        ) {
+
+            logoWidth =
+                maxLogoWidth;
+
+
+            logoHeight =
+                logoWidth /
+                ratio;
+
+        }
+
+    }
+
+
+    const reservedLogoWidth =
+        showLogo &&
+        logoReady
+
+            ? logoWidth +
+              logoMargin * 2
+
+            : 0;
+
+
+    const maxTextWidth =
+        width -
+        paddingX * 2 -
+        reservedLogoWidth;
+
+
+    const lines =
+        wrapText(
+            ctx,
+            text,
+            maxTextWidth
+        );
+
+
+    const textHeight =
+        lines.length *
+        lineHeight;
+
+
+    const bandHeight =
+        Math.max(
+
+            textHeight +
+            paddingY * 2,
+
+            logoHeight +
+            paddingY * 1.5
+
+        );
+
+
+    const bandY =
+        settings.position ===
+        "top"
+
+            ? 0
+
+            : height -
+              bandHeight;
+
+
+    ctx.fillStyle =
+        `rgba(
+            168,
+            188,
+            35,
+            ${settings.opacity}
+        )`;
+
+
+    ctx.fillRect(
+        0,
+        bandY,
+        width,
+        bandHeight
+    );
+
+
+    if (
+        showLogo &&
+        logoReady &&
+        logoWidth > 0
+    ) {
+
+        const logoX =
+            width -
+            logoWidth -
+            logoMargin;
+
+
+        const logoY =
+            bandY +
+            (
+                bandHeight -
+                logoHeight
+            ) / 2;
+
+
+        ctx.drawImage(
+            logo,
+            logoX,
+            logoY,
+            logoWidth,
+            logoHeight
+        );
+
+    }
+
+
+    ctx.fillStyle =
+        settings.color;
+
+
+    ctx.textAlign =
+        "center";
+
+
+    const availableWidth =
+        width -
+        reservedLogoWidth;
+
+
+    const centerX =
+        availableWidth /
+        2;
+
+
+    const firstLineY =
+        bandY +
+        bandHeight / 2 -
+        (
+            lines.length - 1
+        ) *
+        lineHeight / 2;
+
+
+    lines.forEach(
+        (
+            line,
+            index
+        ) => {
+
+            ctx.fillText(
+                line,
+                centerX,
+                firstLineY +
+                index *
+                lineHeight
+            );
+
+        }
+    );
+
+}
+
+
+
+function wrapText(
+    ctx,
+    text,
+    maxWidth
+) {
+
+    const result =
+        [];
+
+
+    const paragraphs =
+        text.split("\n");
+
+
+    paragraphs.forEach(
+        paragraph => {
+
+            const words =
+                paragraph
+                    .trim()
+                    .split(/\s+/)
+                    .filter(Boolean);
+
+
+            if (!words.length) {
+
+                result.push("");
+
+                return;
+
+            }
+
+
+            let currentLine =
+                words[0];
+
+
+            for (
+                let i = 1;
+                i < words.length;
+                i++
+            ) {
+
+                const testLine =
+                    currentLine +
+                    " " +
+                    words[i];
+
+
+                if (
+                    ctx
+                        .measureText(
+                            testLine
+                        )
+                        .width >
+                    maxWidth
+                ) {
+
+                    result.push(
+                        currentLine
+                    );
+
+
+                    currentLine =
+                        words[i];
+
+                } else {
+
+                    currentLine =
+                        testLine;
+
+                }
+
+            }
+
+
+            result.push(
+                currentLine
+            );
+
+        }
+    );
+
+
+    return result;
+
+}
+
+
+
+function previousImage() {
+
+    if (
+        currentIndex <= 0
+    ) return;
+
+
+    currentIndex--;
+
+
+    loadSettings();
+
+    scheduleRender();
+
+}
+
+
+
+function nextImage() {
+
+    if (
+        currentIndex >=
+        images.length - 1
+    ) return;
+
+
+    currentIndex++;
+
+
+    loadSettings();
+
+    scheduleRender();
+
+}
+
+
+
+function updateDots() {
+
+    dots.innerHTML =
+        "";
+
+
+    images.forEach(
+        (
+            item,
+            index
+        ) => {
+
+            const dot =
+                document.createElement(
+                    "div"
+                );
+
+
+            dot.className =
+                "dot" +
+                (
+                    index ===
+                    currentIndex
+                        ? " active"
+                        : ""
+                );
+
+
+            dots.appendChild(
+                dot
+            );
+
+        }
+    );
+
+}
+
+
+
+async function downloadCurrentImage() {
+
+    if (!images.length) return;
+
+
+    const item =
+        images[currentIndex];
+
+
+    downloadBtn.disabled =
+        true;
+
+
+    const originalText =
+        downloadBtn.textContent;
+
+
+    downloadBtn.textContent =
+        "KÉP KÉSZÍTÉSE...";
+
+
+    await new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                30
+            )
+    );
+
+
+    try {
+
+        const exportCanvas =
+            document.createElement(
+                "canvas"
+            );
+
+
+        await renderFullResolution(
+            item,
+            exportCanvas
+        );
+
+
+        exportCanvas.toBlob(
+            blob => {
+
+                if (!blob) {
+
+                    downloadBtn.disabled =
+                        false;
+
+                    downloadBtn.textContent =
+                        originalText;
+
+                    return;
+
+                }
+
+
+                const url =
+                    URL.createObjectURL(
+                        blob
+                    );
+
+
+                const link =
+                    document.createElement(
+                        "a"
+                    );
+
+
+                const baseName =
+                    item.filename.replace(
+                        /\.[^/.]+$/,
+                        ""
+                    );
+
+
+                link.href =
+                    url;
+
+
+                link.download =
+                    baseName +
+                    "_feliratozva.png";
+
+
+                document.body.appendChild(
+                    link
+                );
+
+
+                link.click();
+
+
+                link.remove();
+
+
+                setTimeout(
+                    () => {
+
+                        URL.revokeObjectURL(
+                            url
+                        );
+
+                    },
+                    1500
+                );
+
+
+                downloadBtn.disabled =
+                    false;
+
+
+                downloadBtn.textContent =
+                    originalText;
+
+            },
+            "image/png"
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        alert(
+            "A kép feldolgozása nem sikerült."
+        );
+
+
+        downloadBtn.disabled =
+            false;
+
+
+        downloadBtn.textContent =
+            originalText;
+
+    }
+
+}
+
+
+
+async function renderFullResolution(
+    item,
+    targetCanvas
+) {
+
+    const image =
+        item.image;
+
+
+    const width =
+        image.naturalWidth;
+
+
+    const height =
+        image.naturalHeight;
+
+
+    targetCanvas.width =
+        width;
+
+
+    targetCanvas.height =
+        height;
+
+
+    const ctx =
+        targetCanvas.getContext(
+            "2d",
+            {
+                willReadFrequently: true,
+                alpha: false
+            }
+        );
+
+
+    ctx.drawImage(
+        image,
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    await applyBrightnessContrastChunked(
+        ctx,
+        width,
+        height,
+        item.brightness,
+        item.contrast
+    );
+
+
+    drawTextBlock(
+        ctx,
+        width,
+        height,
+        item.congrats,
+        false
+    );
+
+
+    drawTextBlock(
+        ctx,
+        width,
+        height,
+        item.name,
+        true
+    );
+
+}
+
+
+
+async function applyBrightnessContrastChunked(
+    ctx,
+    width,
+    height,
+    brightnessValue,
+    contrastValue
+) {
+
+    if (
+        brightnessValue === 100 &&
+        contrastValue === 100
+    ) {
+
+        return;
+
+    }
+
+
+    const brightnessMultiplier =
+        brightnessValue /
+        100;
+
+
+    const contrast =
+        contrastValue -
+        100;
+
+
+    const contrastFactor =
+        (
+            259 *
+            (
+                contrast +
+                255
+            )
+        ) /
+        (
+            255 *
+            (
+                259 -
+                contrast
+            )
+        );
+
+
+    const chunkHeight =
+        256;
+
+
+    for (
+        let y = 0;
+        y < height;
+        y += chunkHeight
+    ) {
+
+        const currentHeight =
+            Math.min(
+                chunkHeight,
+                height - y
+            );
+
+
+        const imageData =
+            ctx.getImageData(
+                0,
+                y,
+                width,
+                currentHeight
+            );
+
+
+        const data =
+            imageData.data;
+
+
+        for (
+            let i = 0;
+            i < data.length;
+            i += 4
+        ) {
+
+            let r =
+                data[i] *
+                brightnessMultiplier;
+
+
+            let g =
+                data[i + 1] *
+                brightnessMultiplier;
+
+
+            let b =
+                data[i + 2] *
+                brightnessMultiplier;
+
+
+            r =
+                contrastFactor *
+                (
+                    r -
+                    128
+                ) +
+                128;
+
+
+            g =
+                contrastFactor *
+                (
+                    g -
+                    128
+                ) +
+                128;
+
+
+            b =
+                contrastFactor *
+                (
+                    b -
+                    128
+                ) +
+                128;
+
+
+            data[i] =
+                clampColor(r);
+
+
+            data[i + 1] =
+                clampColor(g);
+
+
+            data[i + 2] =
+                clampColor(b);
+
+        }
+
+
+        ctx.putImageData(
+            imageData,
+            0,
+            y
+        );
+
+
+        if (
+            y %
+            (
+                chunkHeight *
+                4
+            ) === 0
+        ) {
+
+            await new Promise(
+                resolve =>
+                    setTimeout(
+                        resolve,
+                        0
+                    )
+            );
+
+        }
+
+    }
+
+}
+
+
+
+let touchStartX =
+    0;
+
+
+let touchStartY =
+    0;
+
+
+preview.addEventListener(
+    "touchstart",
+    event => {
+
+        const touch =
+            event.changedTouches[0];
+
+
+        touchStartX =
+            touch.screenX;
+
+
+        touchStartY =
+            touch.screenY;
+
+    },
+    {
+        passive: true
+    }
+);
+
+
+
+preview.addEventListener(
+    "touchend",
+    event => {
+
+        const touch =
+            event.changedTouches[0];
+
+
+        const deltaX =
+            touch.screenX -
+            touchStartX;
+
+
+        const deltaY =
+            touch.screenY -
+            touchStartY;
+
+
+        if (
+            Math.abs(deltaX) <
+            55
+        ) return;
+
+
+        if (
+            Math.abs(deltaX) <
+            Math.abs(deltaY)
+        ) return;
+
+
+        if (
+            deltaX < 0
+        ) {
+
+            nextImage();
+
+        } else {
+
+            previousImage();
+
+        }
+
+    },
+    {
+        passive: true
+    }
+);
+
+</script>
+
+</body>
+</html>
