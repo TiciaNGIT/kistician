@@ -8,22 +8,23 @@
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
     >
 
-    <meta name="theme-color" content="#202326">
+    <meta name="theme-color" content="#24272b">
 
     <title>KisTician</title>
 
     <style>
         :root {
-            --bg: #202326;
-            --panel: #2b2f33;
-            --panel-hover: #34393e;
-            --border: #41474d;
+            --bg: #24272b;
+            --panel: #2e3237;
+            --panel-hover: #373c42;
+
+            --border: #444a50;
 
             --text: #ffffff;
-            --muted: #a8afb5;
+            --muted: #aeb4ba;
 
             --green: #8bb52a;
-            --green-dark: #6d921d;
+            --green-dark: #6f941e;
         }
 
         * {
@@ -40,13 +41,13 @@
 
             background: var(--bg);
 
+            color: var(--text);
+
             font-family:
                 Bahnschrift,
                 "Segoe UI",
                 Arial,
                 sans-serif;
-
-            color: var(--text);
         }
 
         body {
@@ -62,28 +63,32 @@
             padding:
                 20px
                 15px
-                calc(30px + env(safe-area-inset-bottom));
+                calc(35px + env(safe-area-inset-bottom));
         }
 
         .header {
-            padding: 18px 4px 28px;
-
             text-align: center;
+
+            padding:
+                22px
+                5px
+                30px;
         }
 
         .header h1 {
             margin: 0;
 
-            font-size: 28px;
-            line-height: 1.1;
-
+            font-size: 30px;
             font-weight: 700;
 
-            color: var(--text);
+            color: #ffffff;
         }
 
         .header p {
-            margin: 8px 0 0;
+            margin:
+                8px
+                0
+                0;
 
             color: var(--muted);
 
@@ -107,11 +112,18 @@
 
             align-items: center;
 
-            gap: 10px;
+            gap: 11px;
 
-            padding: 14px 7px 12px;
+            padding:
+                14px
+                7px
+                13px;
 
-            border: 1px solid var(--border);
+            border:
+                1px
+                solid
+                var(--border);
+
             border-radius: 18px;
 
             background: var(--panel);
@@ -123,7 +135,9 @@
             cursor: pointer;
 
             box-shadow:
-                0 8px 20px
+                0
+                8px
+                22px
                 rgba(0, 0, 0, .16);
 
             transition:
@@ -141,8 +155,8 @@
         }
 
         .icon {
-            width: 70px;
-            height: 70px;
+            width: 72px;
+            height: 72px;
 
             display: flex;
             align-items: center;
@@ -155,8 +169,10 @@
             background: #ffffff;
 
             box-shadow:
-                0 5px 15px
-                rgba(0, 0, 0, .20);
+                0
+                5px
+                16px
+                rgba(0, 0, 0, .22);
         }
 
         .icon img {
@@ -166,6 +182,27 @@
             height: 100%;
 
             object-fit: cover;
+        }
+
+        .fallback-icon {
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--green-dark),
+                    var(--green)
+                );
+
+            color: #ffffff;
+
+            font-size: 28px;
+            font-weight: 700;
         }
 
         .app-name {
@@ -181,25 +218,54 @@
 
             font-size: 12px;
             line-height: 1.3;
-
             font-weight: 600;
 
             overflow-wrap: anywhere;
         }
 
-        .empty {
+        .loading,
+        .message {
             grid-column: 1 / -1;
 
             padding: 50px 20px;
 
-            border: 1px dashed var(--border);
-            border-radius: 16px;
+            text-align: center;
 
             color: var(--muted);
 
-            text-align: center;
-
             font-size: 14px;
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+
+            margin:
+                0
+                auto
+                15px;
+
+            border:
+                3px
+                solid
+                #444a50;
+
+            border-top-color:
+                var(--green);
+
+            border-radius: 50%;
+
+            animation:
+                spin .8s
+                linear
+                infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform:
+                    rotate(360deg);
+            }
         }
 
         @media (min-width: 500px) {
@@ -210,8 +276,8 @@
             }
 
             .icon {
-                width: 78px;
-                height: 78px;
+                width: 80px;
+                height: 80px;
             }
 
             .app-name {
@@ -252,207 +318,408 @@
     <main
         class="apps-grid"
         id="appsGrid"
-    ></main>
+    >
+
+        <div class="loading">
+
+            <div class="spinner"></div>
+
+            Alkalmazások betöltése...
+
+        </div>
+
+    </main>
 
 </div>
 
 
 <script>
 
-    /*
-        =====================================================
-        CSAK EZT A RÉSZT KELL SZERKESZTENED
-        =====================================================
+    const GITHUB_USER =
+        "TicianGIT";
 
-        nev   = ami megjelenik az ikon alatt
-        mappa = a projekt mappájának neve
-        ikon  = az egyedi ikon elérési útja
+    const GITHUB_REPO =
+        "kistician";
 
-        A mappa/index.html automatikusan nyílik meg.
-    */
 
-    const alkalmazasok = [
+    const KIZART_MAPPAK = [
 
-        {
-            nev: "Süveges Autósiskola képkeretező",
-            mappa: "suveges",
-            ikon: "ikonok/suveges.png"
-        },
-
-        {
-            nev: "Vonalkód adagoló",
-            mappa: "vonalkod",
-            ikon: "ikonok/vonalkod.png"
-        },
-
-        {
-            nev: "Munkakörváltás",
-            mappa: "munkakor",
-            ikon: "ikonok/munkakor.png"
-        }
+        "ikonok",
+        ".github",
+        ".git"
 
     ];
 
 
-    /*
-        =====================================================
-        INNENTŐL NEM KELL SZERKESZTENED
-        =====================================================
-    */
-
-
     const appsGrid =
-        document.getElementById("appsGrid");
+        document.getElementById(
+            "appsGrid"
+        );
 
 
-    function alkalmazasokBetoltese() {
+    async function alkalmazasokBetoltese() {
 
-        appsGrid.innerHTML = "";
+        try {
 
-
-        if (
-            alkalmazasok.length === 0
-        ) {
-
-            const empty =
-                document.createElement("div");
-
-
-            empty.className =
-                "empty";
+            const apiUrl =
+                "https://api.github.com/repos/" +
+                encodeURIComponent(GITHUB_USER) +
+                "/" +
+                encodeURIComponent(GITHUB_REPO) +
+                "/contents/";
 
 
-            empty.textContent =
-                "Nincs hozzáadott alkalmazás.";
+            const response =
+                await fetch(
+                    apiUrl,
+                    {
+                        headers: {
+                            "Accept":
+                                "application/vnd.github+json"
+                        },
 
-
-            appsGrid.appendChild(
-                empty
-            );
-
-
-            return;
-
-        }
-
-
-        alkalmazasok.forEach(
-            app => {
-
-                const link =
-                    document.createElement("a");
-
-
-                link.className =
-                    "app-card";
-
-
-                /*
-                    Például:
-                    mappa = suveges
-
-                    Ebből:
-                    suveges/index.html
-                */
-
-                link.href =
-                    tisztitottMappa(
-                        app.mappa
-                    ) +
-                    "/index.html";
-
-
-                const iconBox =
-                    document.createElement("div");
-
-
-                iconBox.className =
-                    "icon";
-
-
-                const icon =
-                    document.createElement("img");
-
-
-                icon.src =
-                    app.ikon;
-
-
-                icon.alt =
-                    app.nev;
-
-
-                icon.draggable =
-                    false;
-
-
-                icon.onerror =
-                    function() {
-
-                        this.style.display =
-                            "none";
-
-
-                        iconBox.innerHTML =
-                            "⚙";
-
-
-                        iconBox.style.fontSize =
-                            "32px";
-
-
-                        iconBox.style.color =
-                            "#202326";
-
-                    };
-
-
-                const name =
-                    document.createElement("div");
-
-
-                name.className =
-                    "app-name";
-
-
-                name.textContent =
-                    app.nev;
-
-
-                iconBox.appendChild(
-                    icon
+                        cache:
+                            "no-store"
+                    }
                 );
 
 
-                link.appendChild(
-                    iconBox
-                );
+            if (!response.ok) {
 
-
-                link.appendChild(
-                    name
-                );
-
-
-                appsGrid.appendChild(
-                    link
+                throw new Error(
+                    "GitHub API hiba: " +
+                    response.status
                 );
 
             }
+
+
+            const tartalom =
+                await response.json();
+
+
+            const mappak =
+                tartalom
+                    .filter(
+                        elem =>
+                            elem.type === "dir"
+                    )
+                    .filter(
+                        elem =>
+                            !KIZART_MAPPAK.includes(
+                                elem.name
+                            )
+                    )
+                    .filter(
+                        elem =>
+                            !elem.name.startsWith(".")
+                    );
+
+
+            appsGrid.innerHTML =
+                "";
+
+
+            if (
+                mappak.length === 0
+            ) {
+
+                uzenetMegjelenitese(
+                    "Nincs megjeleníthető alkalmazás."
+                );
+
+                return;
+
+            }
+
+
+            mappak.sort(
+                (a, b) =>
+                    a.name.localeCompare(
+                        b.name,
+                        "hu",
+                        {
+                            sensitivity:
+                                "base"
+                        }
+                    )
+            );
+
+
+            for (
+                const mappa
+                of mappak
+            ) {
+
+                const vanIndex =
+                    await indexLetezik(
+                        mappa.name
+                    );
+
+
+                if (!vanIndex) {
+
+                    continue;
+
+                }
+
+
+                alkalmazasLetrehozasa(
+                    mappa.name
+                );
+
+            }
+
+
+            if (
+                appsGrid.children.length === 0
+            ) {
+
+                uzenetMegjelenitese(
+                    "Nem található index.html fájlt tartalmazó projektmappa."
+                );
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.error(
+                error
+            );
+
+
+            appsGrid.innerHTML =
+                "";
+
+
+            uzenetMegjelenitese(
+                "Az alkalmazások listája nem tölthető be."
+            );
+
+        }
+
+    }
+
+
+
+    async function indexLetezik(
+        mappaNev
+    ) {
+
+        try {
+
+            const url =
+                "./" +
+                encodeURIComponent(
+                    mappaNev
+                ) +
+                "/index.html";
+
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method:
+                            "GET",
+
+                        cache:
+                            "no-store"
+                    }
+                );
+
+
+            return response.ok;
+
+        }
+
+        catch {
+
+            return false;
+
+        }
+
+    }
+
+
+
+    function alkalmazasLetrehozasa(
+        mappaNev
+    ) {
+
+        const mappaUrl =
+            "./" +
+            encodeURIComponent(
+                mappaNev
+            ) +
+            "/index.html";
+
+
+        const ikonUrl =
+            "./ikonok/" +
+            encodeURIComponent(
+                mappaNev
+            ) +
+            ".png";
+
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
+
+        link.className =
+            "app-card";
+
+
+        link.href =
+            mappaUrl;
+
+
+        const iconBox =
+            document.createElement(
+                "div"
+            );
+
+
+        iconBox.className =
+            "icon";
+
+
+        const icon =
+            document.createElement(
+                "img"
+            );
+
+
+        icon.src =
+            ikonUrl;
+
+
+        icon.alt =
+            mappaNev;
+
+
+        icon.draggable =
+            false;
+
+
+        icon.onerror =
+            function () {
+
+                icon.remove();
+
+
+                const fallback =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                fallback.className =
+                    "fallback-icon";
+
+
+                fallback.textContent =
+                    elsoBetu(
+                        mappaNev
+                    );
+
+
+                iconBox.appendChild(
+                    fallback
+                );
+
+            };
+
+
+        const name =
+            document.createElement(
+                "div"
+            );
+
+
+        name.className =
+            "app-name";
+
+
+        name.textContent =
+            mappaNev;
+
+
+        iconBox.appendChild(
+            icon
+        );
+
+
+        link.appendChild(
+            iconBox
+        );
+
+
+        link.appendChild(
+            name
+        );
+
+
+        appsGrid.appendChild(
+            link
         );
 
     }
 
 
-    function tisztitottMappa(
-        mappa
+
+    function elsoBetu(
+        szoveg
     ) {
 
-        return mappa
-            .replace(/^\/+/, "")
-            .replace(/\/+$/, "");
+        const tisztitott =
+            szoveg.trim();
+
+
+        if (!tisztitott) {
+
+            return "?";
+
+        }
+
+
+        return tisztitott
+            .charAt(0)
+            .toUpperCase();
 
     }
+
+
+
+    function uzenetMegjelenitese(
+        szoveg
+    ) {
+
+        const message =
+            document.createElement(
+                "div"
+            );
+
+
+        message.className =
+            "message";
+
+
+        message.textContent =
+            szoveg;
+
+
+        appsGrid.appendChild(
+            message
+        );
+
+    }
+
 
 
     alkalmazasokBetoltese();
