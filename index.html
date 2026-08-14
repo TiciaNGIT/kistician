@@ -2,36 +2,41 @@
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    >
+
     <title>Képfeliratozó</title>
 
     <style>
         :root {
-            --green-dark: #36591f;
-            --green: #7d9d24;
+            --green: #7fa521;
+            --green-dark: #587916;
             --green-light: #a8bc23;
 
-            --bg: #edf4e7;
-            --panel: #ffffff;
-            --soft: #f3f7ef;
+            --black: #111111;
+            --black-soft: #1b1b1b;
 
-            --text: #24301f;
-            --border: #d4dfca;
+            --white: #ffffff;
+            --off-white: #f6f7f2;
+
+            --border: #d7decf;
+            --muted: #70766a;
         }
 
         * {
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
+        html,
         body {
             margin: 0;
-            min-height: 100vh;
+            padding: 0;
 
-            background: linear-gradient(
-                160deg,
-                #f4f8f0,
-                #dce9d2
-            );
+            min-height: 100%;
 
             font-family:
                 Bahnschrift,
@@ -39,14 +44,31 @@
                 Arial,
                 sans-serif;
 
-            color: var(--text);
+            background:
+                linear-gradient(
+                    160deg,
+                    #ffffff 0%,
+                    #eff4e9 55%,
+                    #dbe6ce 100%
+                );
+
+            color: var(--black);
+        }
+
+        body {
+            min-height: 100vh;
         }
 
         .app {
             width: 100%;
-            max-width: 650px;
+            max-width: 680px;
+
             margin: 0 auto;
-            padding: 10px;
+
+            padding:
+                10px
+                10px
+                calc(20px + env(safe-area-inset-bottom));
         }
 
         .header {
@@ -54,72 +76,122 @@
             align-items: center;
             justify-content: space-between;
 
-            padding: 9px 4px 11px;
+            gap: 10px;
+
+            padding: 8px 4px 12px;
         }
 
-        h1 {
+        .title {
             margin: 0;
 
-            font-size: 22px;
-            color: var(--green-dark);
+            font-size: 23px;
+            font-weight: 700;
+
+            color: var(--black);
         }
 
         .counter {
-            font-size: 14px;
+            min-width: 58px;
+
+            padding: 6px 9px;
+
+            border-radius: 20px;
+
+            background: var(--black);
+            color: var(--white);
+
+            text-align: center;
+
+            font-size: 13px;
             font-weight: 700;
-            color: var(--green-dark);
         }
 
         .panel {
-            background: var(--panel);
+            overflow: hidden;
 
-            border: 1px solid var(--border);
-            border-radius: 16px;
+            background: var(--white);
+
+            border:
+                1px
+                solid
+                var(--border);
+
+            border-radius: 17px;
 
             box-shadow:
-                0 8px 25px rgba(65, 90, 45, 0.10);
-
-            overflow: hidden;
+                0
+                10px
+                28px
+                rgba(0, 0, 0, 0.10);
         }
 
-        .upload {
+        /* FELTÖLTÉS */
+
+        .upload-area {
             padding: 10px;
         }
 
-        input[type="file"] {
+        #imageInput {
+            display: none;
+        }
+
+        .upload-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
             width: 100%;
+            min-height: 48px;
 
-            padding: 9px;
+            border: 0;
+            border-radius: 11px;
 
-            border-radius: 10px;
-            border: 1px solid var(--border);
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--green-dark),
+                    var(--green)
+                );
 
-            background: var(--soft);
+            color: var(--white);
 
             font-family:
                 Bahnschrift,
                 Arial,
                 sans-serif;
+
+            font-size: 15px;
+            font-weight: 700;
+
+            letter-spacing: .03em;
+
+            cursor: pointer;
         }
+
+        .upload-button:active {
+            transform: scale(.99);
+        }
+
+        /* ELŐNÉZET */
 
         .preview {
             position: relative;
 
             width: 100%;
-            min-height: 280px;
+            min-height: 290px;
 
             display: flex;
             align-items: center;
             justify-content: center;
 
-            background: #e8ede4;
+            background: #e6eadf;
 
             overflow: hidden;
 
             touch-action: pan-y;
         }
 
-        canvas {
+        .preview-image {
             display: block;
 
             max-width: 100%;
@@ -127,234 +199,108 @@
 
             width: auto;
             height: auto;
+
+            object-fit: contain;
+
+            user-select: none;
+            -webkit-user-select: none;
+
+            -webkit-touch-callout: default;
+        }
+
+        #renderCanvas {
+            display: none;
         }
 
         .empty {
-            padding: 50px 20px;
+            padding: 60px 20px;
 
-            color: #788470;
+            color: var(--muted);
+
             text-align: center;
 
             font-size: 14px;
         }
 
-        .nav {
+        /* LAPOZÁS */
+
+        .navigation {
             display: grid;
-            grid-template-columns: 50px 1fr 50px;
 
-            gap: 7px;
+            grid-template-columns:
+                64px
+                1fr
+                64px;
 
-            padding: 8px;
+            align-items: center;
+
+            gap: 8px;
+
+            padding: 9px;
         }
 
-        .nav button {
-            height: 38px;
+        .nav-button {
+            height: 44px;
 
-            border: 1px solid var(--border);
+            border: 0;
             border-radius: 10px;
 
-            background: var(--soft);
+            background: var(--green);
 
-            color: var(--green-dark);
+            color: var(--white);
 
-            font-size: 19px;
+            font-size: 27px;
             font-weight: 700;
 
             cursor: pointer;
+
+            box-shadow:
+                0
+                4px
+                10px
+                rgba(90, 120, 30, .20);
         }
 
-        .nav button:disabled {
-            opacity: .35;
+        .nav-button:active {
+            background: var(--green-dark);
+            transform: scale(.97);
+        }
+
+        .nav-button:disabled {
+            background: #bac7aa;
+            opacity: .55;
+
+            box-shadow: none;
         }
 
         .filename {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-width: 0;
+
+            padding: 0 4px;
 
             overflow: hidden;
 
             white-space: nowrap;
             text-overflow: ellipsis;
 
-            font-size: 12px;
-            color: #687360;
-        }
-
-        .controls {
-            padding: 10px;
-
-            display: flex;
-            flex-direction: column;
-
-            gap: 7px;
-        }
-
-        textarea {
-            width: 100%;
-            min-height: 72px;
-
-            resize: vertical;
-
-            border: 1px solid var(--border);
-            border-radius: 10px;
-
-            padding: 9px 10px;
-
-            background: var(--soft);
-
-            color: var(--text);
-
-            font-family:
-                Bahnschrift,
-                Arial,
-                sans-serif;
-
-            font-size: 15px;
-
-            outline: none;
-        }
-
-        textarea:focus,
-        select:focus {
-            border-color: var(--green);
-        }
-
-        .settings {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-
-            gap: 6px;
-        }
-
-        .setting {
-            min-width: 0;
-
-            background: var(--soft);
-
-            border: 1px solid var(--border);
-            border-radius: 9px;
-
-            padding: 6px 7px;
-        }
-
-        .setting label {
-            display: block;
-
-            margin-bottom: 3px;
-
-            font-size: 10px;
-            font-weight: 700;
-
-            color: #607055;
-
-            text-transform: uppercase;
-        }
-
-        select {
-            width: 100%;
-
-            border: 0;
-            background: transparent;
-
-            padding: 3px 0;
-
-            color: var(--text);
-
-            font-family:
-                Bahnschrift,
-                Arial,
-                sans-serif;
-
-            font-size: 13px;
-
-            outline: none;
-        }
-
-        .range-wrap {
-            display: grid;
-            grid-template-columns: 1fr 34px;
-
-            gap: 4px;
-            align-items: center;
-        }
-
-        input[type="range"] {
-            width: 100%;
-
-            accent-color: var(--green);
-        }
-
-        .value {
-            font-size: 11px;
             text-align: center;
-            font-weight: 700;
-        }
 
-        .color-row {
-            display: grid;
-            grid-template-columns: 1fr 38px;
+            font-size: 12px;
+            font-weight: 600;
 
-            gap: 6px;
-            align-items: center;
-        }
-
-        input[type="color"] {
-            width: 38px;
-            height: 29px;
-
-            padding: 1px;
-
-            border: 0;
-            border-radius: 6px;
-
-            background: none;
-
-            cursor: pointer;
-        }
-
-        .download {
-            width: 100%;
-
-            margin-top: 2px;
-            padding: 12px;
-
-            border: 0;
-            border-radius: 11px;
-
-            background: linear-gradient(
-                135deg,
-                var(--green-dark),
-                var(--green)
-            );
-
-            color: white;
-
-            font-family:
-                Bahnschrift,
-                Arial,
-                sans-serif;
-
-            font-size: 15px;
-            font-weight: 700;
-
-            cursor: pointer;
-        }
-
-        .download:disabled {
-            opacity: .45;
+            color: #586051;
         }
 
         .dots {
             display: flex;
             justify-content: center;
-            align-items: center;
 
             gap: 5px;
 
-            padding-bottom: 8px;
-
-            overflow: hidden;
+            padding:
+                0
+                10px
+                7px;
         }
 
         .dot {
@@ -363,21 +309,221 @@
 
             border-radius: 50%;
 
-            background: #c9d6be;
+            background: #ccd5c3;
         }
 
         .dot.active {
             background: var(--green);
-            transform: scale(1.3);
+
+            transform: scale(1.35);
+        }
+
+        /* BEÁLLÍTÁSOK */
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+
+            gap: 8px;
+
+            padding: 10px;
+        }
+
+        .text-block {
+            display: flex;
+            flex-direction: column;
+
+            gap: 6px;
+
+            padding: 8px;
+
+            border:
+                1px
+                solid
+                var(--border);
+
+            border-radius: 10px;
+
+            background: var(--off-white);
+        }
+
+        textarea {
+            width: 100%;
+
+            min-height: 54px;
+
+            padding: 8px 9px;
+
+            resize: vertical;
+
+            border:
+                1px
+                solid
+                var(--border);
+
+            border-radius: 8px;
+
+            outline: none;
+
+            background: var(--white);
+
+            color: var(--black);
+
+            font-family:
+                Bahnschrift,
+                Arial,
+                sans-serif;
+
+            font-size: 14px;
+        }
+
+        textarea:focus {
+            border-color: var(--green);
+        }
+
+        .settings {
+            display: grid;
+
+            grid-template-columns:
+                1fr
+                1fr;
+
+            gap: 5px;
+        }
+
+        .setting {
+            min-width: 0;
+
+            padding: 5px 6px;
+
+            border:
+                1px
+                solid
+                var(--border);
+
+            border-radius: 7px;
+
+            background: var(--white);
+        }
+
+        .setting label {
+            display: block;
+
+            margin-bottom: 2px;
+
+            color: #626a59;
+
+            font-size: 9px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+        }
+
+        select {
+            width: 100%;
+
+            border: 0;
+
+            outline: none;
+
+            background: transparent;
+
+            color: var(--black);
+
+            font-family:
+                Bahnschrift,
+                Arial,
+                sans-serif;
+
+            font-size: 12px;
+        }
+
+        .range-wrap {
+            display: grid;
+
+            grid-template-columns:
+                1fr
+                34px;
+
+            align-items: center;
+
+            gap: 3px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+
+            accent-color: var(--green);
+        }
+
+        .range-value {
+            text-align: center;
+
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .color-wrap {
+            display: grid;
+
+            grid-template-columns:
+                1fr
+                33px;
+
+            gap: 4px;
+
+            align-items: center;
+        }
+
+        input[type="color"] {
+            width: 33px;
+            height: 26px;
+
+            padding: 0;
+
+            border: 0;
+
+            background: transparent;
+        }
+
+        /* LETÖLTÉS */
+
+        .download-button {
+            width: 100%;
+
+            min-height: 48px;
+
+            border: 0;
+            border-radius: 11px;
+
+            background: var(--black);
+
+            color: var(--white);
+
+            font-family:
+                Bahnschrift,
+                Arial,
+                sans-serif;
+
+            font-size: 15px;
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .download-button:active {
+            background: var(--green-dark);
+        }
+
+        .download-button:disabled {
+            opacity: .4;
         }
 
         @media (min-width: 500px) {
-
             .settings {
                 grid-template-columns:
                     repeat(4, 1fr);
             }
-
         }
     </style>
 </head>
@@ -389,7 +535,7 @@
 
     <div class="header">
 
-        <h1>
+        <h1 class="title">
             Képfeliratozó
         </h1>
 
@@ -405,7 +551,7 @@
 
     <div class="panel">
 
-        <div class="upload">
+        <div class="upload-area">
 
             <input
                 type="file"
@@ -413,6 +559,13 @@
                 accept="image/*"
                 multiple
             >
+
+            <label
+                for="imageInput"
+                class="upload-button"
+            >
+                KÉPEK FELTÖLTÉSE
+            </label>
 
         </div>
 
@@ -429,21 +582,28 @@
                 Kép feltöltése
             </div>
 
-            <canvas
-                id="canvas"
+            <img
+                id="previewImage"
+                class="preview-image"
+                alt=""
                 hidden
+            >
+
+            <canvas
+                id="renderCanvas"
             ></canvas>
 
         </div>
 
 
         <div
-            class="nav"
-            id="nav"
+            class="navigation"
+            id="navigation"
             hidden
         >
 
             <button
+                class="nav-button"
                 id="prevBtn"
             >
                 ‹
@@ -455,6 +615,7 @@
             ></div>
 
             <button
+                class="nav-button"
                 id="nextBtn"
             >
                 ›
@@ -469,160 +630,317 @@
         ></div>
 
 
-        <div
-            class="controls"
-        >
+        <div class="controls">
 
-            <textarea
-                id="textInput"
-                placeholder="Szöveg..."
-                disabled
-            ></textarea>
+            <!-- NÉV -->
 
+            <div class="text-block">
 
-            <div class="settings">
-
-
-                <div class="setting">
-
-                    <label>
-                        Hely
-                    </label>
-
-                    <select
-                        id="positionSelect"
-                        disabled
-                    >
-                        <option value="top">
-                            Felül
-                        </option>
-
-                        <option
-                            value="bottom"
-                            selected
-                        >
-                            Alul
-                        </option>
-                    </select>
-
-                </div>
+                <textarea
+                    id="nameText"
+                    placeholder="Név..."
+                    disabled
+                ></textarea>
 
 
-                <div class="setting">
+                <div class="settings">
 
-                    <label>
-                        Szövegszín
-                    </label>
+                    <div class="setting">
 
-                    <div class="color-row">
+                        <label>
+                            Hely
+                        </label>
 
                         <select
-                            id="colorPreset"
+                            id="namePosition"
                             disabled
                         >
+
+                            <option value="top">
+                                Felül
+                            </option>
+
                             <option
-                                value="#ffffff"
+                                value="bottom"
                                 selected
                             >
-                                Fehér
+                                Alul
                             </option>
 
-                            <option value="#000000">
-                                Fekete
-                            </option>
-
-                            <option value="#ffff00">
-                                Sárga
-                            </option>
-
-                            <option value="#ff0000">
-                                Piros
-                            </option>
-
-                            <option value="custom">
-                                Egyedi
-                            </option>
                         </select>
 
-                        <input
-                            type="color"
-                            id="textColor"
-                            value="#ffffff"
-                            disabled
-                        >
+                    </div>
+
+
+                    <div class="setting">
+
+                        <label>
+                            Szín
+                        </label>
+
+                        <div class="color-wrap">
+
+                            <select
+                                id="nameColorPreset"
+                                disabled
+                            >
+
+                                <option value="#ffffff">
+                                    Fehér
+                                </option>
+
+                                <option
+                                    value="#000000"
+                                    selected
+                                >
+                                    Fekete
+                                </option>
+
+                                <option value="#ffff00">
+                                    Sárga
+                                </option>
+
+                                <option value="#ff0000">
+                                    Piros
+                                </option>
+
+                                <option value="custom">
+                                    Egyedi
+                                </option>
+
+                            </select>
+
+                            <input
+                                type="color"
+                                id="nameColor"
+                                value="#000000"
+                                disabled
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <label>
+                            Betű
+                        </label>
+
+                        <div class="range-wrap">
+
+                            <input
+                                type="range"
+                                id="nameFont"
+                                min="20"
+                                max="120"
+                                value="80"
+                                disabled
+                            >
+
+                            <span
+                                class="range-value"
+                                id="nameFontValue"
+                            >
+                                80
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <label>
+                            Háttér
+                        </label>
+
+                        <div class="range-wrap">
+
+                            <input
+                                type="range"
+                                id="nameOpacity"
+                                min="20"
+                                max="100"
+                                value="70"
+                                disabled
+                            >
+
+                            <span
+                                class="range-value"
+                                id="nameOpacityValue"
+                            >
+                                70
+                            </span>
+
+                        </div>
 
                     </div>
 
                 </div>
 
+            </div>
 
-                <div class="setting">
 
-                    <label>
-                        Betű
-                    </label>
+            <!-- GRATULÁLUNK -->
 
-                    <div class="range-wrap">
+            <div class="text-block">
 
-                        <input
-                            type="range"
-                            id="fontSize"
-                            min="20"
-                            max="90"
-                            value="44"
+                <textarea
+                    id="congratsText"
+                    disabled
+                >Gratulálunk a sikeres vizsgához!</textarea>
+
+
+                <div class="settings">
+
+                    <div class="setting">
+
+                        <label>
+                            Hely
+                        </label>
+
+                        <select
+                            id="congratsPosition"
                             disabled
                         >
 
-                        <span
-                            class="value"
-                            id="fontValue"
-                        >
-                            44
-                        </span>
+                            <option
+                                value="top"
+                                selected
+                            >
+                                Felül
+                            </option>
+
+                            <option value="bottom">
+                                Alul
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <label>
+                            Szín
+                        </label>
+
+                        <div class="color-wrap">
+
+                            <select
+                                id="congratsColorPreset"
+                                disabled
+                            >
+
+                                <option value="#ffffff">
+                                    Fehér
+                                </option>
+
+                                <option
+                                    value="#000000"
+                                    selected
+                                >
+                                    Fekete
+                                </option>
+
+                                <option value="#ffff00">
+                                    Sárga
+                                </option>
+
+                                <option value="#ff0000">
+                                    Piros
+                                </option>
+
+                                <option value="custom">
+                                    Egyedi
+                                </option>
+
+                            </select>
+
+                            <input
+                                type="color"
+                                id="congratsColor"
+                                value="#000000"
+                                disabled
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <label>
+                            Betű
+                        </label>
+
+                        <div class="range-wrap">
+
+                            <input
+                                type="range"
+                                id="congratsFont"
+                                min="20"
+                                max="120"
+                                value="65"
+                                disabled
+                            >
+
+                            <span
+                                class="range-value"
+                                id="congratsFontValue"
+                            >
+                                65
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <label>
+                            Háttér
+                        </label>
+
+                        <div class="range-wrap">
+
+                            <input
+                                type="range"
+                                id="congratsOpacity"
+                                min="20"
+                                max="100"
+                                value="90"
+                                disabled
+                            >
+
+                            <span
+                                class="range-value"
+                                id="congratsOpacityValue"
+                            >
+                                90
+                            </span>
+
+                        </div>
 
                     </div>
 
                 </div>
-
-
-                <div class="setting">
-
-                    <label>
-                        Háttér
-                    </label>
-
-                    <div class="range-wrap">
-
-                        <input
-                            type="range"
-                            id="opacity"
-                            min="20"
-                            max="90"
-                            value="55"
-                            disabled
-                        >
-
-                        <span
-                            class="value"
-                            id="opacityValue"
-                        >
-                            55
-                        </span>
-
-                    </div>
-
-                </div>
-
 
             </div>
 
 
             <button
-                class="download"
+                class="download-button"
                 id="downloadBtn"
                 disabled
             >
-                Kép letöltése
+                KÉP LETÖLTÉSE
             </button>
 
         </div>
@@ -637,20 +955,17 @@
 const imageInput =
     document.getElementById("imageInput");
 
-const canvas =
-    document.getElementById("canvas");
-
-const ctx =
-    canvas.getContext("2d");
-
 const preview =
     document.getElementById("preview");
+
+const previewImage =
+    document.getElementById("previewImage");
 
 const empty =
     document.getElementById("empty");
 
-const nav =
-    document.getElementById("nav");
+const navigation =
+    document.getElementById("navigation");
 
 const prevBtn =
     document.getElementById("prevBtn");
@@ -667,32 +982,61 @@ const counter =
 const dots =
     document.getElementById("dots");
 
-const textInput =
-    document.getElementById("textInput");
-
-const positionSelect =
-    document.getElementById("positionSelect");
-
-const fontSize =
-    document.getElementById("fontSize");
-
-const fontValue =
-    document.getElementById("fontValue");
-
-const opacity =
-    document.getElementById("opacity");
-
-const opacityValue =
-    document.getElementById("opacityValue");
-
-const textColor =
-    document.getElementById("textColor");
-
-const colorPreset =
-    document.getElementById("colorPreset");
+const canvas =
+    document.getElementById("renderCanvas");
 
 const downloadBtn =
     document.getElementById("downloadBtn");
+
+
+const nameText =
+    document.getElementById("nameText");
+
+const namePosition =
+    document.getElementById("namePosition");
+
+const nameColorPreset =
+    document.getElementById("nameColorPreset");
+
+const nameColor =
+    document.getElementById("nameColor");
+
+const nameFont =
+    document.getElementById("nameFont");
+
+const nameFontValue =
+    document.getElementById("nameFontValue");
+
+const nameOpacity =
+    document.getElementById("nameOpacity");
+
+const nameOpacityValue =
+    document.getElementById("nameOpacityValue");
+
+
+const congratsText =
+    document.getElementById("congratsText");
+
+const congratsPosition =
+    document.getElementById("congratsPosition");
+
+const congratsColorPreset =
+    document.getElementById("congratsColorPreset");
+
+const congratsColor =
+    document.getElementById("congratsColor");
+
+const congratsFont =
+    document.getElementById("congratsFont");
+
+const congratsFontValue =
+    document.getElementById("congratsFontValue");
+
+const congratsOpacity =
+    document.getElementById("congratsOpacity");
+
+const congratsOpacityValue =
+    document.getElementById("congratsOpacityValue");
 
 
 let images = [];
@@ -716,6 +1060,15 @@ logo.onload = () => {
 };
 
 
+logo.onerror = () => {
+
+    logoReady = false;
+
+    render();
+
+};
+
+
 logo.src =
     "suveges.png";
 
@@ -727,14 +1080,15 @@ imageInput.addEventListener(
 );
 
 
-textInput.addEventListener(
+
+nameText.addEventListener(
     "input",
     () => {
 
         if (!images.length) return;
 
-        images[currentIndex].text =
-            textInput.value;
+        images[currentIndex].name.text =
+            nameText.value;
 
         render();
 
@@ -742,14 +1096,14 @@ textInput.addEventListener(
 );
 
 
-positionSelect.addEventListener(
+namePosition.addEventListener(
     "change",
     () => {
 
         if (!images.length) return;
 
-        images[currentIndex].position =
-            positionSelect.value;
+        images[currentIndex].name.position =
+            namePosition.value;
 
         render();
 
@@ -757,17 +1111,17 @@ positionSelect.addEventListener(
 );
 
 
-fontSize.addEventListener(
+nameFont.addEventListener(
     "input",
     () => {
 
-        fontValue.textContent =
-            fontSize.value;
+        nameFontValue.textContent =
+            nameFont.value;
 
         if (!images.length) return;
 
-        images[currentIndex].fontSize =
-            Number(fontSize.value);
+        images[currentIndex].name.fontSize =
+            Number(nameFont.value);
 
         render();
 
@@ -775,17 +1129,17 @@ fontSize.addEventListener(
 );
 
 
-opacity.addEventListener(
+nameOpacity.addEventListener(
     "input",
     () => {
 
-        opacityValue.textContent =
-            opacity.value;
+        nameOpacityValue.textContent =
+            nameOpacity.value;
 
         if (!images.length) return;
 
-        images[currentIndex].opacity =
-            Number(opacity.value) / 100;
+        images[currentIndex].name.opacity =
+            Number(nameOpacity.value) / 100;
 
         render();
 
@@ -793,22 +1147,22 @@ opacity.addEventListener(
 );
 
 
-colorPreset.addEventListener(
+nameColorPreset.addEventListener(
     "change",
     () => {
 
         if (!images.length) return;
 
         if (
-            colorPreset.value !==
+            nameColorPreset.value !==
             "custom"
         ) {
 
-            textColor.value =
-                colorPreset.value;
+            nameColor.value =
+                nameColorPreset.value;
 
-            images[currentIndex].color =
-                colorPreset.value;
+            images[currentIndex].name.color =
+                nameColorPreset.value;
 
             render();
 
@@ -818,17 +1172,17 @@ colorPreset.addEventListener(
 );
 
 
-textColor.addEventListener(
+nameColor.addEventListener(
     "input",
     () => {
 
         if (!images.length) return;
 
-        colorPreset.value =
+        nameColorPreset.value =
             "custom";
 
-        images[currentIndex].color =
-            textColor.value;
+        images[currentIndex].name.color =
+            nameColor.value;
 
         render();
 
@@ -836,29 +1190,132 @@ textColor.addEventListener(
 );
 
 
-prevBtn.addEventListener(
-    "click",
+
+congratsText.addEventListener(
+    "input",
     () => {
 
-        previousImage();
+        if (!images.length) return;
+
+        images[currentIndex].congrats.text =
+            congratsText.value;
+
+        render();
 
     }
+);
+
+
+congratsPosition.addEventListener(
+    "change",
+    () => {
+
+        if (!images.length) return;
+
+        images[currentIndex].congrats.position =
+            congratsPosition.value;
+
+        render();
+
+    }
+);
+
+
+congratsFont.addEventListener(
+    "input",
+    () => {
+
+        congratsFontValue.textContent =
+            congratsFont.value;
+
+        if (!images.length) return;
+
+        images[currentIndex].congrats.fontSize =
+            Number(congratsFont.value);
+
+        render();
+
+    }
+);
+
+
+congratsOpacity.addEventListener(
+    "input",
+    () => {
+
+        congratsOpacityValue.textContent =
+            congratsOpacity.value;
+
+        if (!images.length) return;
+
+        images[currentIndex].congrats.opacity =
+            Number(congratsOpacity.value) / 100;
+
+        render();
+
+    }
+);
+
+
+congratsColorPreset.addEventListener(
+    "change",
+    () => {
+
+        if (!images.length) return;
+
+        if (
+            congratsColorPreset.value !==
+            "custom"
+        ) {
+
+            congratsColor.value =
+                congratsColorPreset.value;
+
+            images[currentIndex].congrats.color =
+                congratsColorPreset.value;
+
+            render();
+
+        }
+
+    }
+);
+
+
+congratsColor.addEventListener(
+    "input",
+    () => {
+
+        if (!images.length) return;
+
+        congratsColorPreset.value =
+            "custom";
+
+        images[currentIndex].congrats.color =
+            congratsColor.value;
+
+        render();
+
+    }
+);
+
+
+
+prevBtn.addEventListener(
+    "click",
+    previousImage
 );
 
 
 nextBtn.addEventListener(
     "click",
-    () => {
-
-        nextImage();
-
-    }
+    nextImage
 );
 
 
 downloadBtn.addEventListener(
     "click",
-    downloadImage
+    downloadCurrentImage
 );
 
 
@@ -870,15 +1327,11 @@ async function loadImages(event) {
             event.target.files
         );
 
+
     if (!files.length) return;
 
 
-    images = [];
-
-    currentIndex = 0;
-
-
-    const loaded =
+    images =
         await Promise.all(
             files.map(
                 file =>
@@ -887,8 +1340,7 @@ async function loadImages(event) {
         );
 
 
-    images =
-        loaded;
+    currentIndex = 0;
 
 
     enableControls();
@@ -898,6 +1350,7 @@ async function loadImages(event) {
     render();
 
 }
+
 
 
 function fileToImage(file) {
@@ -910,45 +1363,68 @@ function fileToImage(file) {
 
 
             reader.onload =
-                e => {
+                event => {
 
-                    const img =
+                    const image =
                         new Image();
 
 
-                    img.onload =
+                    image.onload =
                         () => {
 
                             resolve({
 
                                 image:
-                                    img,
+                                    image,
 
                                 filename:
                                     file.name,
 
-                                text:
-                                    "",
+                                name: {
 
-                                position:
-                                    "bottom",
+                                    text:
+                                        "",
 
-                                fontSize:
-                                    44,
+                                    position:
+                                        "bottom",
 
-                                opacity:
-                                    0.55,
+                                    fontSize:
+                                        80,
 
-                                color:
-                                    "#ffffff"
+                                    opacity:
+                                        0.70,
+
+                                    color:
+                                        "#000000"
+
+                                },
+
+                                congrats: {
+
+                                    text:
+                                        "Gratulálunk a sikeres vizsgához!",
+
+                                    position:
+                                        "top",
+
+                                    fontSize:
+                                        65,
+
+                                    opacity:
+                                        0.90,
+
+                                    color:
+                                        "#000000"
+
+                                }
 
                             });
 
                         };
 
 
-                    img.src =
-                        e.target.result;
+                    image.src =
+                        event.target.result;
 
                 };
 
@@ -963,38 +1439,64 @@ function fileToImage(file) {
 }
 
 
+
 function enableControls() {
 
-    empty.hidden = true;
+    empty.hidden =
+        true;
 
-    canvas.hidden = false;
 
-    nav.hidden =
+    previewImage.hidden =
+        false;
+
+
+    navigation.hidden =
         images.length <= 1;
 
 
-    textInput.disabled =
+    nameText.disabled =
         false;
 
-    positionSelect.disabled =
+    namePosition.disabled =
         false;
 
-    fontSize.disabled =
+    nameColorPreset.disabled =
         false;
 
-    opacity.disabled =
+    nameColor.disabled =
         false;
 
-    textColor.disabled =
+    nameFont.disabled =
         false;
 
-    colorPreset.disabled =
+    nameOpacity.disabled =
         false;
+
+
+    congratsText.disabled =
+        false;
+
+    congratsPosition.disabled =
+        false;
+
+    congratsColorPreset.disabled =
+        false;
+
+    congratsColor.disabled =
+        false;
+
+    congratsFont.disabled =
+        false;
+
+    congratsOpacity.disabled =
+        false;
+
 
     downloadBtn.disabled =
         false;
 
 }
+
 
 
 function loadSettings() {
@@ -1006,52 +1508,80 @@ function loadSettings() {
         images[currentIndex];
 
 
-    textInput.value =
-        item.text;
+    nameText.value =
+        item.name.text;
 
 
-    positionSelect.value =
-        item.position;
+    namePosition.value =
+        item.name.position;
 
 
-    fontSize.value =
-        item.fontSize;
+    nameFont.value =
+        item.name.fontSize;
 
 
-    fontValue.textContent =
-        item.fontSize;
+    nameFontValue.textContent =
+        item.name.fontSize;
 
 
-    opacity.value =
+    nameOpacity.value =
         Math.round(
-            item.opacity * 100
+            item.name.opacity * 100
         );
 
 
-    opacityValue.textContent =
+    nameOpacityValue.textContent =
         Math.round(
-            item.opacity * 100
+            item.name.opacity * 100
         );
 
 
-    textColor.value =
-        item.color;
+    nameColor.value =
+        item.name.color;
 
 
-    const presets = [
-        "#ffffff",
-        "#000000",
-        "#ffff00",
-        "#ff0000"
-    ];
+    setColorPreset(
+        nameColorPreset,
+        item.name.color
+    );
 
 
-    colorPreset.value =
-        presets.includes(
-            item.color
-        )
-            ? item.color
-            : "custom";
+    congratsText.value =
+        item.congrats.text;
+
+
+    congratsPosition.value =
+        item.congrats.position;
+
+
+    congratsFont.value =
+        item.congrats.fontSize;
+
+
+    congratsFontValue.textContent =
+        item.congrats.fontSize;
+
+
+    congratsOpacity.value =
+        Math.round(
+            item.congrats.opacity * 100
+        );
+
+
+    congratsOpacityValue.textContent =
+        Math.round(
+            item.congrats.opacity * 100
+        );
+
+
+    congratsColor.value =
+        item.congrats.color;
+
+
+    setColorPreset(
+        congratsColorPreset,
+        item.congrats.color
+    );
 
 
     filename.textContent =
@@ -1076,17 +1606,53 @@ function loadSettings() {
 }
 
 
+
+function setColorPreset(
+    select,
+    color
+) {
+
+    const colors = [
+
+        "#ffffff",
+        "#000000",
+        "#ffff00",
+        "#ff0000"
+
+    ];
+
+
+    select.value =
+        colors.includes(color)
+            ? color
+            : "custom";
+
+}
+
+
+
 function render() {
 
     if (!images.length) return;
 
 
+    const item =
+        images[currentIndex];
+
+
     renderItem(
-        images[currentIndex],
+        item,
         canvas
     );
 
+
+    previewImage.src =
+        canvas.toDataURL(
+            "image/png"
+        );
+
 }
+
 
 
 function renderItem(
@@ -1094,20 +1660,22 @@ function renderItem(
     targetCanvas
 ) {
 
-    const c =
-        targetCanvas.getContext("2d");
+    const ctx =
+        targetCanvas.getContext(
+            "2d"
+        );
 
 
-    const img =
+    const image =
         item.image;
 
 
     const width =
-        img.naturalWidth;
+        image.naturalWidth;
 
 
     const height =
-        img.naturalHeight;
+        image.naturalHeight;
 
 
     targetCanvas.width =
@@ -1118,7 +1686,7 @@ function renderItem(
         height;
 
 
-    c.clearRect(
+    ctx.clearRect(
         0,
         0,
         width,
@@ -1126,63 +1694,101 @@ function renderItem(
     );
 
 
-    c.drawImage(
-        img,
+    ctx.drawImage(
+        image,
         0,
         0,
         width,
         height
     );
 
+
+    drawTextBlock(
+        ctx,
+        width,
+        height,
+        item.congrats,
+        false
+    );
+
+
+    drawTextBlock(
+        ctx,
+        width,
+        height,
+        item.name,
+        true
+    );
+
+}
+
+
+
+function drawTextBlock(
+    ctx,
+    width,
+    height,
+    settings,
+    showLogo
+) {
 
     const text =
-        item.text.trim();
+        settings.text.trim();
 
 
     if (!text) return;
 
 
-    const fontPx =
+    const fontSize =
         Math.max(
-            18,
-            item.fontSize *
+            20,
+            settings.fontSize *
             width /
             1200
         );
 
 
     const lineHeight =
-        fontPx * 1.18;
+        fontSize *
+        1.15;
 
 
     const paddingX =
-        width * 0.035;
+        width *
+        0.035;
 
 
     const paddingY =
-        fontPx * 0.5;
+        fontSize *
+        0.48;
 
 
-    c.font =
-        `700 ${fontPx}px Bahnschrift, Arial, sans-serif`;
+    ctx.font =
+        `700 ${fontSize}px Bahnschrift, Arial, sans-serif`;
 
 
-    c.textBaseline =
+    ctx.textBaseline =
         "middle";
 
 
-    let logoWidth = 0;
+    let logoWidth =
+        0;
 
-    let logoHeight = 0;
+
+    let logoHeight =
+        0;
 
 
     const logoMargin =
-        width * 0.018;
+        width *
+        0.018;
 
 
     if (
+        showLogo &&
         logoReady &&
-        logo.naturalWidth
+        logo.naturalWidth &&
+        logo.naturalHeight
     ) {
 
         const ratio =
@@ -1192,8 +1798,8 @@ function renderItem(
 
         logoHeight =
             Math.max(
-                fontPx * 1.8,
-                width * 0.08
+                fontSize * 1.6,
+                width * 0.085
             );
 
 
@@ -1203,7 +1809,8 @@ function renderItem(
 
 
         const maxLogoWidth =
-            width * 0.24;
+            width *
+            0.27;
 
 
         if (
@@ -1214,6 +1821,7 @@ function renderItem(
             logoWidth =
                 maxLogoWidth;
 
+
             logoHeight =
                 logoWidth /
                 ratio;
@@ -1223,22 +1831,25 @@ function renderItem(
     }
 
 
-    const reservedLogo =
+    const reservedLogoWidth =
+        showLogo &&
         logoReady
+
             ? logoWidth +
               logoMargin * 2
+
             : 0;
 
 
     const maxTextWidth =
         width -
         paddingX * 2 -
-        reservedLogo;
+        reservedLogoWidth;
 
 
     const lines =
         wrapText(
-            c,
+            ctx,
             text,
             maxTextWidth
         );
@@ -1251,27 +1862,36 @@ function renderItem(
 
     const bandHeight =
         Math.max(
+
             textHeight +
             paddingY * 2,
 
             logoHeight +
-            paddingY * 1.7
+            paddingY * 1.5
+
         );
 
 
     const bandY =
-        item.position ===
+        settings.position ===
         "top"
+
             ? 0
+
             : height -
               bandHeight;
 
 
-    c.fillStyle =
-        `rgba(168,188,35,${item.opacity})`;
+    ctx.fillStyle =
+        `rgba(
+            168,
+            188,
+            35,
+            ${settings.opacity}
+        )`;
 
 
-    c.fillRect(
+    ctx.fillRect(
         0,
         bandY,
         width,
@@ -1280,6 +1900,7 @@ function renderItem(
 
 
     if (
+        showLogo &&
         logoReady &&
         logoWidth > 0
     ) {
@@ -1298,7 +1919,7 @@ function renderItem(
             ) / 2;
 
 
-        c.drawImage(
+        ctx.drawImage(
             logo,
             logoX,
             logoY,
@@ -1309,24 +1930,25 @@ function renderItem(
     }
 
 
-    c.fillStyle =
-        item.color;
+    ctx.fillStyle =
+        settings.color;
 
 
-    c.textAlign =
+    ctx.textAlign =
         "center";
 
 
-    const textAreaWidth =
+    const availableWidth =
         width -
-        reservedLogo;
+        reservedLogoWidth;
 
 
     const centerX =
-        textAreaWidth / 2;
+        availableWidth /
+        2;
 
 
-    const startY =
+    const firstLineY =
         bandY +
         bandHeight / 2 -
         (
@@ -1341,10 +1963,10 @@ function renderItem(
             index
         ) => {
 
-            c.fillText(
+            ctx.fillText(
                 line,
                 centerX,
-                startY +
+                firstLineY +
                 index *
                 lineHeight
             );
@@ -1355,8 +1977,9 @@ function renderItem(
 }
 
 
+
 function wrapText(
-    context,
+    ctx,
     text,
     maxWidth
 ) {
@@ -1374,6 +1997,7 @@ function wrapText(
 
             const words =
                 paragraph
+                    .trim()
                     .split(/\s+/)
                     .filter(Boolean);
 
@@ -1387,7 +2011,7 @@ function wrapText(
             }
 
 
-            let line =
+            let currentLine =
                 words[0];
 
 
@@ -1397,32 +2021,33 @@ function wrapText(
                 i++
             ) {
 
-                const test =
-                    line +
+                const testLine =
+                    currentLine +
                     " " +
                     words[i];
 
 
                 if (
-                    context
+                    ctx
                         .measureText(
-                            test
+                            testLine
                         )
                         .width >
                     maxWidth
                 ) {
 
                     result.push(
-                        line
+                        currentLine
                     );
 
-                    line =
+
+                    currentLine =
                         words[i];
 
                 } else {
 
-                    line =
-                        test;
+                    currentLine =
+                        testLine;
 
                 }
 
@@ -1430,7 +2055,7 @@ function wrapText(
 
 
             result.push(
-                line
+                currentLine
             );
 
         }
@@ -1442,20 +2067,23 @@ function wrapText(
 }
 
 
+
 function previousImage() {
 
     if (
-        currentIndex === 0
+        currentIndex <= 0
     ) return;
 
 
     currentIndex--;
+
 
     loadSettings();
 
     render();
 
 }
+
 
 
 function nextImage() {
@@ -1468,11 +2096,13 @@ function nextImage() {
 
     currentIndex++;
 
+
     loadSettings();
 
     render();
 
 }
+
 
 
 function updateDots() {
@@ -1513,7 +2143,8 @@ function updateDots() {
 }
 
 
-function downloadImage() {
+
+function downloadCurrentImage() {
 
     if (!images.length) return;
 
@@ -1549,7 +2180,7 @@ function downloadImage() {
                 );
 
 
-            const base =
+            const baseName =
                 item.filename.replace(
                     /\.[^/.]+$/,
                     ""
@@ -1561,7 +2192,7 @@ function downloadImage() {
 
 
             link.download =
-                base +
+                baseName +
                 "_feliratozva.png";
 
 
@@ -1577,10 +2208,13 @@ function downloadImage() {
 
 
             setTimeout(
-                () =>
+                () => {
+
                     URL.revokeObjectURL(
                         url
-                    ),
+                    );
+
+                },
                 1000
             );
 
@@ -1592,21 +2226,25 @@ function downloadImage() {
 
 
 
-let touchStartX = 0;
+let touchStartX =
+    0;
 
-let touchStartY = 0;
+
+let touchStartY =
+    0;
 
 
 preview.addEventListener(
     "touchstart",
-    e => {
+    event => {
 
         const touch =
-            e.changedTouches[0];
+            event.changedTouches[0];
 
 
         touchStartX =
             touch.screenX;
+
 
         touchStartY =
             touch.screenY;
@@ -1618,38 +2256,39 @@ preview.addEventListener(
 );
 
 
+
 preview.addEventListener(
     "touchend",
-    e => {
+    event => {
 
         const touch =
-            e.changedTouches[0];
+            event.changedTouches[0];
 
 
-        const diffX =
+        const deltaX =
             touch.screenX -
             touchStartX;
 
 
-        const diffY =
+        const deltaY =
             touch.screenY -
             touchStartY;
 
 
         if (
-            Math.abs(diffX) <
-            50
+            Math.abs(deltaX) <
+            55
         ) return;
 
 
         if (
-            Math.abs(diffX) <
-            Math.abs(diffY)
+            Math.abs(deltaX) <
+            Math.abs(deltaY)
         ) return;
 
 
         if (
-            diffX < 0
+            deltaX < 0
         ) {
 
             nextImage();
